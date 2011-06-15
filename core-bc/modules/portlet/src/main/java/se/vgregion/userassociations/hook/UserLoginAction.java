@@ -68,7 +68,7 @@ public class UserLoginAction extends Action {
             LastPath lastPath = (LastPath) session.getAttribute(WebKeys.LAST_PATH);
 
             if (noLanding(user)) {
-                lastPath = new LastPath(request.getContextPath(), "web/guest/home");
+                //lastPath = new LastPath(request.getContextPath(), "/web/guest/home");
             } else {
                 if (lastPath.getPath() == null || lastPath.getPath().equals("/")) {
                     // Look for Communities
@@ -107,4 +107,5 @@ public class UserLoginAction extends Action {
             matcher.process(user);
         }
     }
+
 }
