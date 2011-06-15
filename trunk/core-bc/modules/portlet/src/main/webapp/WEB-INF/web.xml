@@ -26,9 +26,9 @@
   <display-name>liferay-user-association-admin</display-name>
   <description>CHANGE ME!</description>
 
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
+  <!--<listener>-->
+    <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
+  <!--</listener>-->
 
   <!--<context-param>
     <param-name>contextConfigLocation</param-name>
