@@ -4,31 +4,43 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-  <bean id="externalUserMatcher" class="se.vgregion.userassociations.matcher.UserScreenNameGroupMatcher" init-method="initGroupIds">
-    <constructor-arg index="0" value="10132"/>
+  <bean id="propertyPlaceholderConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath:application.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="externalUserMatcher" class="se.vgregion.userassociations.matcher.UserScreenNameGroupMatcher"
+        init-method="initGroupIds">
+    <constructor-arg index="0" value="${regionportalen.companyId}"/>
     <constructor-arg index="1" value="ex_.*"/>
-    <constructor-arg index="2" ref="externalGroupNames" />
+    <constructor-arg index="2" ref="externalGroupNames"/>
   </bean>
 
   <util:list id="externalGroupNames">
     <value>Extern</value>
   </util:list>
 
-  <bean id="internalUserMatcher" class="se.vgregion.userassociations.matcher.UserScreenNameGroupMatcher" init-method="initGroupIds">
-    <constructor-arg index="0" value="10132"/>
+  <bean id="internalUserMatcher" class="se.vgregion.userassociations.matcher.UserScreenNameGroupMatcher"
+        init-method="initGroupIds">
+    <constructor-arg index="0" value="${regionportalen.companyId}"/>
     <constructor-arg index="1" value="^((?!^ex_.*).)*$"/>
-    <constructor-arg index="2" ref="internalGroupNames" />
+    <!-- "^((?!^ex_.*).)*$" means that the line should not start with "ex_". Obvious? ;) -->
+    <constructor-arg index="2" ref="internalGroupNames"/>
   </bean>
 
   <util:list id="internalGroupNames">
-    <value>Vgregion</value>
+    <value>VGRegion</value>
   </util:list>
 
   <util:list id="matcherList">
-    <ref bean="externalUserMatcher" />
-    <ref bean="internalUserMatcher" />
+    <ref bean="externalUserMatcher"/>
+    <ref bean="internalUserMatcher"/>
   </util:list>
 
 
-  <bean id="groupLocalService" class="com.liferay.portal.service.GroupLocalServiceUtil" factory-method="getService" />
+  <bean id="groupLocalService" class="com.liferay.portal.service.GroupLocalServiceUtil" factory-method="getService"/>
 </beans>

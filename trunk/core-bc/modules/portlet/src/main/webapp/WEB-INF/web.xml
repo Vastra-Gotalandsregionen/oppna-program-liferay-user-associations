@@ -23,47 +23,4 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
   version="2.4">
 
-  <display-name>liferay-user-association-admin</display-name>
-  <description>CHANGE ME!</description>
-
-  <!--<listener>-->
-    <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
-  <!--</listener>-->
-
-  <!--<context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      classpath*:/applicationContext.xml
-    </param-value>
-  </context-param>-->
-
-  <!--<listener>
-    <listener-class>com.liferay.portal.kernel.servlet.PortletContextListener</listener-class>
-  </listener>-->
-
-  <servlet>
-    <servlet-name>view</servlet-name>
-    <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>view</servlet-name>
-    <url-pattern>/WEB-INF/servlet/view</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UserAssociationAdmin</servlet-name>
-    <servlet-class>com.liferay.portal.kernel.servlet.PortletServlet</servlet-class>
-    <init-param>
-      <param-name>portlet-class</param-name>
-      <param-value>org.springframework.web.portlet.DispatcherPortlet</param-value>
-    </init-param>
-    <load-on-startup>0</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UserAssociationAdmin</servlet-name>
-    <url-pattern>/UserAssociationAdmin/*</url-pattern>
-  </servlet-mapping>
-
 </web-app>
