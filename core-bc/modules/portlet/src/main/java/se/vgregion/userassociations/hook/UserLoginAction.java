@@ -42,42 +42,18 @@ public class UserLoginAction extends Action {
         try {
             HttpSession session = request.getSession();
             User user = UserLocalServiceUtil.getUser(PortalUtil.getUserId(request));
-            Group firstUserGroup = null;
 
             resolveAssociations(user);
 
-//            // First look for User's Private Pages
-//            if (user.hasPrivateLayouts()) {
-//                // Redirect to User's Private Pages
-//                lastPath = new LastPath(request.getContextPath(), PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_USER_SERVLET_MAPPING) + user.getGroup().getFriendlyURL());
-//            }
-
-//            if (lastPath == null) {
-//                // Look for Organizations
-//                List<Organization> organizations = user.getOrganizations();
-//                for (Organization organization : organizations) {
-//                    Group group = organization.getGroup();
-//                    if (firstUserGroup == null)
-//                        firstUserGroup = group;
-//                    if (group.hasPrivateLayouts())
-//                        lastPath = new LastPath(request.getContextPath(), PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) + group.getFriendlyURL());
-//                    if (lastPath != null)
-//                        break;
-//                }
-//            }
             LastPath lastPath = (LastPath) session.getAttribute(WebKeys.LAST_PATH);
 
-            if (noLanding(user)) {
-                //lastPath = new LastPath(request.getContextPath(), "/web/guest/home");
-            } else {
-                if (lastPath.getPath() == null || lastPath.getPath().equals("/")) {
-                    // Look for Communities
-                    List<Group> groups = user.getGroups();
-                    for (Group group : groups) {
-                        if (group.hasPrivateLayouts())
-                            lastPath = new LastPath(request.getContextPath(), PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) + group.getFriendlyURL());
-                        if (lastPath != null)
-                            break;
+            if (lastPath.getPath() == null || lastPath.getPath().equals("/")) {
+                // Look for Communities
+                List<Group> groups = user.getGroups();
+                for (Group group : groups) {
+                    if (group.hasPrivateLayouts()) {
+                        lastPath = new LastPath(request.getContextPath(), PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) + group.getFriendlyURL());
+                        break;
                     }
                 }
             }
@@ -88,18 +64,6 @@ public class UserLoginAction extends Action {
         } catch (Exception e) {
             throw new ActionException(e);
         }
-    }
-
-    private boolean noLanding(User user) {
-        try {
-            for (Role role : user.getRoles()) {
-                if (role.getName().equals("Administrator")) return true;
-            }
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
-
-        return user.isDefaultUser() || !user.isActive() || user.isLockout();
     }
 
     private void resolveAssociations(User user) {
