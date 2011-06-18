@@ -7,6 +7,8 @@ import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -17,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserScreenNameGroupMatcher implements Matcher {
+    private static final Logger logger = LoggerFactory.getLogger(UserScreenNameGroupMatcher.class);
 
     private long companyId;
     private String valueRegExp;
@@ -36,6 +39,8 @@ public class UserScreenNameGroupMatcher implements Matcher {
         if (companyId != user.getCompanyId()) return;
 
         if (user.getScreenName().matches(valueRegExp)) {
+            logger.debug("Checking ["+user.getScreenName()+"] in ["+groupIds+"]");
+
             long[] memberIn = null;
             try {
                 memberIn = user.getGroupIds();
