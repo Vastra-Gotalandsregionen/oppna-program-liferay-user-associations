@@ -47,7 +47,7 @@ public class UserLoginAction extends Action {
 
             LastPath lastPath = (LastPath) session.getAttribute(WebKeys.LAST_PATH);
 
-            if (lastPath.getPath() == null || lastPath.getPath().equals("/")) {
+            if (lastPath == null || lastPath.getPath() == null || lastPath.getPath().equals("/")) {
                 // Look for Communities
                 List<Group> groups = user.getGroups();
                 for (Group group : groups) {
