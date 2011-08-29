@@ -117,6 +117,34 @@ Generation time : 2011-06-14 13:13:30 CEST
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.liferay.portal</groupId>
+      <artifactId>portal-impl</artifactId>
+      <version>${liferay.version}</version>
+      <!--<classifier>ee</classifier>-->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.portlet</groupId>
+      <artifactId>portlet-api</artifactId>
+      <!--<scope>test</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>se.vgregion.test-utils</groupId>
+      <artifactId>test-utils-bc-core-composite-svc</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <profiles>
