@@ -42,6 +42,13 @@ public class UserLoginAction extends Action {
         matcherList = (List<Matcher>) ctx.getBean("matcherList");
     }
 
+    /**
+     *
+     *
+     * @param request
+     * @param response
+     * @throws ActionException
+     */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         try {
