@@ -16,9 +16,7 @@ import se.vgregion.liferay.application.userproperty.UserStub;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +55,93 @@ public class UserScreenNameGroupMatcherTest {
         verify(mockUserLocalService).addGroupUsers(2l, new long[]{12345l});
         verify(mockUserLocalService).addGroupUsers(3l, new long[]{12345l});
     }
+    @Test
+    public void testProcessScreennameNotEx2() throws Exception {
+        long companyId = 0l;
 
+        UserScreenNameGroupMatcher matcher = new UserScreenNameGroupMatcher(companyId, "ex_.*",
+                Arrays.asList("Apa"));
+
+        GroupLocalService mockGroupLocalService = mock(GroupLocalService.class);
+        ReflectionTestUtils.setField(matcher, "groupLocalService", mockGroupLocalService);
+
+        UserLocalService mockUserLocalService = mock(UserLocalService.class);
+        ReflectionTestUtils.setField(matcher, "userLocalService", mockUserLocalService);
+
+        ReflectionTestUtils.setField(matcher, "groupIds", Arrays.asList(1l));
+
+        User user = getUserStub(companyId, 12345l, "mockUser", new long[] {});
+
+        matcher.process(user);
+
+        verify(mockUserLocalService, never()).addGroupUsers(1l, new long[]{12345l});
+    }
+
+    @Test
+    public void testProcessScreennameAlreadyMember() throws Exception {
+        long companyId = 0l;
+
+        UserScreenNameGroupMatcher matcher = new UserScreenNameGroupMatcher(companyId, "ex_.*",
+                Arrays.asList("Apa"));
+
+        GroupLocalService mockGroupLocalService = mock(GroupLocalService.class);
+        ReflectionTestUtils.setField(matcher, "groupLocalService", mockGroupLocalService);
+
+        UserLocalService mockUserLocalService = mock(UserLocalService.class);
+        ReflectionTestUtils.setField(matcher, "userLocalService", mockUserLocalService);
+
+        ReflectionTestUtils.setField(matcher, "groupIds", Arrays.asList(1l));
+
+        User user = getUserStub(companyId, 12345l, "ex_mockUser", new long[] {1l});
+
+        matcher.process(user);
+
+        verify(mockUserLocalService, never()).addGroupUsers(1l, new long[]{12345l});
+    }
+
+    @Test
+    public void testProcessScreennameEx() throws Exception {
+        long companyId = 0l;
+
+        UserScreenNameGroupMatcher matcher = new UserScreenNameGroupMatcher(companyId, "^((?!^ex_.*).)*$",
+                Arrays.asList("Apa"));
+
+        GroupLocalService mockGroupLocalService = mock(GroupLocalService.class);
+        ReflectionTestUtils.setField(matcher, "groupLocalService", mockGroupLocalService);
+
+        UserLocalService mockUserLocalService = mock(UserLocalService.class);
+        ReflectionTestUtils.setField(matcher, "userLocalService", mockUserLocalService);
+
+        ReflectionTestUtils.setField(matcher, "groupIds", Arrays.asList(1l));
+
+        User user = getUserStub(companyId, 12345l, "ex_mockUser", new long[] {});
+
+        matcher.process(user);
+
+        verify(mockUserLocalService, never()).addGroupUsers(1l, new long[]{12345l});
+    }
+
+    @Test
+    public void testProcessScreennameEx2() throws Exception {
+        long companyId = 0l;
+
+        UserScreenNameGroupMatcher matcher = new UserScreenNameGroupMatcher(companyId, "ex_.*",
+                Arrays.asList("Apa"));
+
+        GroupLocalService mockGroupLocalService = mock(GroupLocalService.class);
+        ReflectionTestUtils.setField(matcher, "groupLocalService", mockGroupLocalService);
+
+        UserLocalService mockUserLocalService = mock(UserLocalService.class);
+        ReflectionTestUtils.setField(matcher, "userLocalService", mockUserLocalService);
+
+        ReflectionTestUtils.setField(matcher, "groupIds", Arrays.asList(1l));
+
+        User user = getUserStub(companyId, 12345l, "ex_mockUser", new long[] {});
+
+        matcher.process(user);
+
+        verify(mockUserLocalService).addGroupUsers(1l, new long[]{12345l});
+    }
 
     private User getUserStub(long companyId, long userId, String screenName, long[] currentGroups) {
         User user = mock(User.class);
@@ -69,8 +153,6 @@ public class UserScreenNameGroupMatcherTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return user;
     }
 

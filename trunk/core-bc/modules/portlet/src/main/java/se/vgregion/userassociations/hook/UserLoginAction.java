@@ -11,7 +11,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
+import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.util.Portal;
 import com.liferay.portal.util.PortalUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -31,6 +33,8 @@ import java.util.List;
 public class UserLoginAction extends Action {
 
     private List<Matcher> matcherList;
+    private UserLocalService userLocalService = null;
+    private Portal portal = null;
 
     public UserLoginAction() {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -42,7 +46,7 @@ public class UserLoginAction extends Action {
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         try {
             HttpSession session = request.getSession();
-            User user = UserLocalServiceUtil.getUser(PortalUtil.getUserId(request));
+            User user = getUserLocalService().getUser(getPortal().getUserId(request));
 
             resolveAssociations(user);
 
@@ -97,6 +101,20 @@ public class UserLoginAction extends Action {
         for (Matcher matcher : matcherList) {
             matcher.process(user);
         }
+    }
+
+    private UserLocalService getUserLocalService() {
+        if (userLocalService == null) {
+            userLocalService = UserLocalServiceUtil.getService();
+        }
+        return userLocalService;
+    }
+
+    private Portal getPortal() {
+        if (portal == null) {
+            portal = PortalUtil.getPortal();
+        }
+        return portal;
     }
 
 }

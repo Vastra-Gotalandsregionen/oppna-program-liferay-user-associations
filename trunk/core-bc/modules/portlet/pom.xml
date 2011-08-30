@@ -134,10 +134,21 @@ Generation time : 2011-06-14 13:13:30 CEST
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.powermock</groupId>-->
+      <!--<artifactId>powermock-api-mockito</artifactId>-->
+      <!--<version>1.4.8</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>javax.portlet</groupId>
       <artifactId>portlet-api</artifactId>
       <!--<scope>test</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>se.vgregion.test-utils</groupId>
