@@ -36,6 +36,9 @@ public class UserLoginAction extends Action {
     private UserLocalService userLocalService = null;
     private Portal portal = null;
 
+    /**
+     * Load matchers from Spring Configuration.
+     */
     public UserLoginAction() {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
@@ -43,11 +46,13 @@ public class UserLoginAction extends Action {
     }
 
     /**
+     * The action is run by Liferay when the user log in.
+     * Uses configured matchers that associate the user with community/organization,
+     * and redirect the user to its community.
      *
-     *
-     * @param request
-     * @param response
-     * @throws ActionException
+     * @param request, the HttpRequest
+     * @param response, the HttpResponse is not used, needed for the method signature.
+     * @throws ActionException, wrap all exceptions in an ActionException.
      */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {

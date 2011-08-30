@@ -29,12 +29,24 @@ public class UserScreenNameGroupMatcher implements Matcher {
     private UserLocalService userLocalService;
     private GroupLocalService groupLocalService;
 
+    /**
+     * Match group association (Community/Organization) from user screenname.
+     *
+     * @param companyId, to separate portal-instance.
+     * @param valueRegExp, opt in regular expression.
+     * @param groupNames, the groups that should be associated.
+     */
     public UserScreenNameGroupMatcher(long companyId, String valueRegExp, List<String> groupNames) {
         this.companyId = companyId;
         this.valueRegExp = valueRegExp;
         this.groupNames = groupNames;
     }
 
+    /**
+     * The matcher signature take the Liferay User as parameter.
+     *
+     * @param user
+     */
     public void process(User user) {
         if (companyId != user.getCompanyId()) return;
 
@@ -83,10 +95,10 @@ public class UserScreenNameGroupMatcher implements Matcher {
     }
 
     /*
-     * This cannot be autowired because then UserLocalServiceUtil would be called before the UserLocalService
-     * instance has been created.
+     * This cannot be autowired because, when UserLocalServiceUtil is called, the UserLocalService
+     * instance hasn't been created yet.
      *
-     * @return
+     * @return the UserLocalService.
      */
     private UserLocalService getUserLocalService() {
         if (userLocalService == null) {
@@ -95,6 +107,12 @@ public class UserScreenNameGroupMatcher implements Matcher {
         return userLocalService;
     }
 
+    /*
+     * This cannot be autowired because, when GroupLocalServiceUtil is called, the GroupLocalService
+     * instance hasn't been created yet.
+     *
+     * @return the UserLocalService.
+     */
     private GroupLocalService getGroupLocalService() {
         if (groupLocalService == null) {
             groupLocalService = GroupLocalServiceUtil.getService();
