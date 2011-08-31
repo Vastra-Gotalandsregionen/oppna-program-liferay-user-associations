@@ -75,7 +75,12 @@ public class UserScreenNameGroupMatcher implements Matcher {
         }
     }
 
-    private void initGroupIds() {
+    /**
+     * Initialization method, used by Spring.
+     *
+     * This cannot be run in the constructor since the GroupLocalService has to have time to get initialized.
+     */
+    public void initGroupIds() {
         for (String groupName : groupNames) {
             try {
                 groupIds.add(getGroupLocalService().getGroup(companyId, groupName).getGroupId());
