@@ -43,7 +43,8 @@ public class UserScreenNameGroupMatcher implements Matcher {
     /**
      * The matcher signature take the Liferay User as parameter.
      *
-     * @param user, Liferay user.
+     * @param user
+     *              Liferay user.
      */
     public void process(User user) {
         if (companyId != user.getCompanyId()) {

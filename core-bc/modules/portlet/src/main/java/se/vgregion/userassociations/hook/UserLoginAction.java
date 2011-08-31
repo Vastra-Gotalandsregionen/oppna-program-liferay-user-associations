@@ -49,9 +49,12 @@ public class UserLoginAction extends Action {
      * Uses configured matchers that associate the user with community/organization,
      * and redirect the user to its community.
      *
-     * @param request,  the HttpRequest
-     * @param response, the HttpResponse is not used, needed for the method signature.
-     * @throws ActionException, wrap all exceptions in an ActionException.
+     * @param request
+     *              the HttpRequest
+     * @param response
+     *              the HttpResponse is not used, needed for the method signature.
+     * @throws ActionException
+     *              wrap all exceptions in an ActionException.
      */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
