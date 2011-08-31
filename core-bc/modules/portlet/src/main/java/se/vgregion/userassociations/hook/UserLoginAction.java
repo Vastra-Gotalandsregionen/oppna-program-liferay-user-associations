@@ -56,12 +56,9 @@ public class UserLoginAction extends Action {
      * Uses configured matchers that associate the user with community/organization,
      * and redirect the user to its community.
      *
-     * @param request
-     *              the HttpRequest
-     * @param response
-     *              the HttpResponse is not used, needed for the method signature.
-     * @throws ActionException
-     *              wrap all exceptions in an ActionException.
+     * @param request  the HttpRequest
+     * @param response the HttpResponse is not used, needed for the method signature.
+     * @throws ActionException wrap all exceptions in an ActionException.
      */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
@@ -73,13 +70,13 @@ public class UserLoginAction extends Action {
             resolveAssociations(user);
 
             LastPath lastPath = (LastPath) session.getAttribute(WebKeys.LAST_PATH);
-            LOGGER.info("before: "+ (lastPath == null ? "null" : lastPath.getPath()));
+            LOGGER.info("before: " + (lastPath == null ? "null" : lastPath.getPath()));
 
             if (lastPath == null || lastPath.getPath() == null || lastPaths.contains(lastPath.getPath())) {
                 // Look for Communities - No path form initial call
                 lastPath = computeLastPath(request.getContextPath(), user);
             }
-            LOGGER.info("after: "+ (lastPath == null ? "null" : lastPath.getPath()));
+            LOGGER.info("after: " + (lastPath == null ? "null" : lastPath.getPath()));
 
             if (lastPath != null) {
                 session.setAttribute(WebKeys.LAST_PATH, lastPath);
