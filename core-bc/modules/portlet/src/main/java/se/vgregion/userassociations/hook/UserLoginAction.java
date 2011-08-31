@@ -14,6 +14,8 @@ import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.Portal;
 import com.liferay.portal.util.PortalUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.vgregion.userassociations.matcher.Matcher;
@@ -30,10 +32,13 @@ import java.util.List;
  * Time: 15:47
  */
 public class UserLoginAction extends Action {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserLoginAction.class);
 
     private List<Matcher> matcherList;
     private UserLocalService userLocalService = null;
     private Portal portal = null;
+    private List<String> lastPaths;
+
 
     /**
      * Load matchers from Spring Configuration.
@@ -42,6 +47,8 @@ public class UserLoginAction extends Action {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         matcherList = (List<Matcher>) ctx.getBean("matcherList");
+
+        lastPaths = (List<String>) ctx.getBean("lastPaths");
     }
 
     /**
@@ -66,11 +73,13 @@ public class UserLoginAction extends Action {
             resolveAssociations(user);
 
             LastPath lastPath = (LastPath) session.getAttribute(WebKeys.LAST_PATH);
+            LOGGER.info("before: "+ (lastPath == null ? "null" : lastPath.getPath()));
 
-            if (lastPath == null || lastPath.getPath() == null || lastPath.getPath().equals("/")) {
+            if (lastPath == null || lastPath.getPath() == null || lastPaths.contains(lastPath.getPath())) {
                 // Look for Communities - No path form initial call
                 lastPath = computeLastPath(request.getContextPath(), user);
             }
+            LOGGER.info("after: "+ (lastPath == null ? "null" : lastPath.getPath()));
 
             if (lastPath != null) {
                 session.setAttribute(WebKeys.LAST_PATH, lastPath);
