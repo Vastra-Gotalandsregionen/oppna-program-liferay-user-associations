@@ -49,7 +49,7 @@ public class UserLoginAction extends Action {
      * Uses configured matchers that associate the user with community/organization,
      * and redirect the user to its community.
      *
-     * @param request, the HttpRequest
+     * @param request,  the HttpRequest
      * @param response, the HttpResponse is not used, needed for the method signature.
      * @throws ActionException, wrap all exceptions in an ActionException.
      */
@@ -57,7 +57,8 @@ public class UserLoginAction extends Action {
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         try {
             HttpSession session = request.getSession();
-            User user = getUserLocalService().getUser(getPortal().getUserId(request));
+            User user = null;
+            user = getUserLocalService().getUser(getPortal().getUserId(request));
 
             resolveAssociations(user);
 
@@ -71,7 +72,9 @@ public class UserLoginAction extends Action {
             if (lastPath != null) {
                 session.setAttribute(WebKeys.LAST_PATH, lastPath);
             }
-        } catch (Exception e) {
+        } catch (SystemException e) {
+            throw new ActionException(e);
+        } catch (PortalException e) {
             throw new ActionException(e);
         }
     }
