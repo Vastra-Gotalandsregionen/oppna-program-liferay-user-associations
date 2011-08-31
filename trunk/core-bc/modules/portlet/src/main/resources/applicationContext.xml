@@ -41,6 +41,12 @@
     <ref bean="internalUserMatcher"/>
   </util:list>
 
+  <util:list id="lastPaths">
+    <value>/</value>
+    <value>/guest/home</value>
+    <value>web/guest</value>
+  </util:list>
+
 
   <bean id="groupLocalService" class="com.liferay.portal.service.GroupLocalServiceUtil" factory-method="getService"/>
 </beans>
