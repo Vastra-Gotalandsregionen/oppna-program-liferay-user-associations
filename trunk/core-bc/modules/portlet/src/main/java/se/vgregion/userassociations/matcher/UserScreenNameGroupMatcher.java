@@ -27,9 +27,12 @@ public class UserScreenNameGroupMatcher implements Matcher {
     /**
      * Match group association (Community/Organization) from user screenname.
      *
-     * @param companyId,   to separate portal-instance.
-     * @param valueRegExp, opt in regular expression.
-     * @param groupNames,  the groups that should be associated.
+     * @param companyId
+     *              to separate portal-instance.
+     * @param valueRegExp
+     *              opt in regular expression.
+     * @param groupNames
+     *              the groups that should be associated.
      */
     public UserScreenNameGroupMatcher(long companyId, String valueRegExp, List<String> groupNames) {
         this.companyId = companyId;
