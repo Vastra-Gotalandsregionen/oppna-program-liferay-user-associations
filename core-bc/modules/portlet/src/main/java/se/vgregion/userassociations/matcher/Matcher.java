@@ -10,6 +10,11 @@ import com.liferay.portal.model.User;
  */
 public interface Matcher {
 
+    /**
+     * The matcher signature take the Liferay User as parameter.
+     *
+     * @param user, Liferay user.
+     */
     void process(User user);
 
 }
