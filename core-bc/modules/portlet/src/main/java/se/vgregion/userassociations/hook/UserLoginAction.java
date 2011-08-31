@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
@@ -26,7 +25,7 @@ import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
- * User: david
+ * User: David Rosell
  * Date: 13/6-11
  * Time: 15:47
  */
@@ -83,15 +82,15 @@ public class UserLoginAction extends Action {
         if (vgregion != null) {
             if (vgregion.hasPrivateLayouts()) {
                 return new LastPath(contextPath,
-                        PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) +
-                                vgregion.getFriendlyURL());
+                        PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING)
+                                + vgregion.getFriendlyURL());
             }
         } else {
             for (Group group : groups) {
                 if (group.hasPrivateLayouts()) {
                     return new LastPath(contextPath,
-                            PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) +
-                                    group.getFriendlyURL());
+                            PropsUtil.get(PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING)
+                                    + group.getFriendlyURL());
                 }
             }
         }
