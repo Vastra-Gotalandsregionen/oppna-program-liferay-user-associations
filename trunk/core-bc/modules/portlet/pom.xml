@@ -50,11 +50,6 @@ Generation time : 2011-06-14 13:13:30 CEST
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>liferay-user-associations-core-bc-composite-webcomp</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>javax.portlet</groupId>
       <artifactId>portlet-api</artifactId>
     </dependency>
