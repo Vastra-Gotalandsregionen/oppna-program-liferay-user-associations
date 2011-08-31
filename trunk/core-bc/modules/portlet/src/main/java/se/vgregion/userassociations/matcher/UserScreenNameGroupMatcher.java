@@ -9,17 +9,12 @@ import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class UserScreenNameGroupMatcher implements Matcher {
-    private static final Logger logger = LoggerFactory.getLogger(UserScreenNameGroupMatcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserScreenNameGroupMatcher.class);
 
     private long companyId;
     private String valueRegExp;
@@ -32,9 +27,9 @@ public class UserScreenNameGroupMatcher implements Matcher {
     /**
      * Match group association (Community/Organization) from user screenname.
      *
-     * @param companyId, to separate portal-instance.
+     * @param companyId,   to separate portal-instance.
      * @param valueRegExp, opt in regular expression.
-     * @param groupNames, the groups that should be associated.
+     * @param groupNames,  the groups that should be associated.
      */
     public UserScreenNameGroupMatcher(long companyId, String valueRegExp, List<String> groupNames) {
         this.companyId = companyId;
@@ -45,20 +40,24 @@ public class UserScreenNameGroupMatcher implements Matcher {
     /**
      * The matcher signature take the Liferay User as parameter.
      *
-     * @param user
+     * @param user, Liferay user.
      */
     public void process(User user) {
-        if (companyId != user.getCompanyId()) return;
+        if (companyId != user.getCompanyId()) {
+            return;
+        }
 
         if (user.getScreenName().matches(valueRegExp)) {
-            logger.debug("Checking ["+user.getScreenName()+"] in ["+groupIds+"]");
+            LOGGER.debug("Checking [" + user.getScreenName() + "] in [" + groupIds + "]");
 
             long[] memberIn = null;
             try {
                 memberIn = user.getGroupIds();
 
                 for (long groupId : groupIds) {
-                    if (alreadyMember(groupId, memberIn)) continue;
+                    if (alreadyMember(groupId, memberIn)) {
+                        continue;
+                    }
 
                     try {
                         getUserLocalService().addGroupUsers(groupId, new long[]{user.getUserId()});
@@ -88,8 +87,10 @@ public class UserScreenNameGroupMatcher implements Matcher {
     }
 
     private boolean alreadyMember(long groupId, long[] memberIn) {
-        for (long member: memberIn) {
-            if (member == groupId) return true;
+        for (long member : memberIn) {
+            if (member == groupId) {
+                return true;
+            }
         }
         return false;
     }
