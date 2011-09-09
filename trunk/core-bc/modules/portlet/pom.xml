@@ -11,7 +11,7 @@ Generation time : 2011-06-14 13:13:30 CEST
   <parent>
     <groupId>se.vgregion.liferay-user-associations</groupId>
     <artifactId>liferay-user-associations-core-bc</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
   <groupId>se.vgregion.liferay-user-associations</groupId>
   <artifactId>liferay-user-associations-core-bc-module-portlet</artifactId>
@@ -55,11 +55,6 @@ Generation time : 2011-06-14 13:13:30 CEST
     <dependency>
       <groupId>com.sun.portal</groupId>
       <artifactId>portlet-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>se.vgregion.javg</groupId>
-      <artifactId>javg-rt-support</artifactId>
-      <version>${javg.version}</version>
     </dependency>
     <dependency>
       <groupId>taglibs</groupId>
