@@ -62,6 +62,8 @@ public class UserLoginAction extends Action {
      */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
+        LOGGER.info("user login action");
+
         try {
             HttpSession session = request.getSession();
             User user = null;
