@@ -6,7 +6,8 @@ This is the Web-app Maven POM.
 Template version: 1.4
 Generation time : 2011-06-14 13:13:30 CEST
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.liferay-user-associations</groupId>
@@ -55,6 +56,11 @@ Generation time : 2011-06-14 13:13:30 CEST
     <dependency>
       <groupId>com.sun.portal</groupId>
       <artifactId>portlet-container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>se.vgregion.javg</groupId>
+      <artifactId>javg-rt-support</artifactId>
+      <version>${javg.version}</version>
     </dependency>
     <dependency>
       <groupId>taglibs</groupId>
