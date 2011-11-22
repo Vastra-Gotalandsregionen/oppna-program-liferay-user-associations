@@ -49,8 +49,8 @@ import java.util.List;
  * Date: 13/6-11
  * Time: 15:47
  */
-public class UserLoginAction extends Action {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserLoginAction.class);
+public class UserCommunityAction extends Action {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCommunityAction.class);
 
     private List<Matcher> matcherList;
     private UserLocalService userLocalService = null;
@@ -61,7 +61,7 @@ public class UserLoginAction extends Action {
     /**
      * Load matchers from Spring Configuration.
      */
-    public UserLoginAction() {
+    public UserCommunityAction() {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         matcherList = (List<Matcher>) ctx.getBean("matcherList");

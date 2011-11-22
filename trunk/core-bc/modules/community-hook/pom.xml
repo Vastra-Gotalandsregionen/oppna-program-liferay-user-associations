@@ -14,12 +14,12 @@ Generation time : 2011-06-14 13:13:30 CEST
     <version>1.1-SNAPSHOT</version>
   </parent>
   <groupId>se.vgregion.liferay-user-associations</groupId>
-  <artifactId>liferay-user-associations-core-bc-module-portlet</artifactId>
+  <artifactId>liferay-user-associations-core-bc-module-community-hook</artifactId>
   <packaging>war</packaging>
   <name>${project.artifactId}</name>
 
   <build>
-    <finalName>liferay-user-associations</finalName>
+    <finalName>liferay-community-hook</finalName>
     <plugins>
       <plugin>
         <!-- Configure eclipse plug-in to generate a context root that does not have the version number on it -->
@@ -28,21 +28,6 @@ Generation time : 2011-06-14 13:13:30 CEST
         <configuration>
           <wtpContextName>${project.artifactId}</wtpContextName>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <version>1.0.7</version>
-        <executions>
-          <execution>
-            <id>generate-rebel-xml</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -128,15 +113,9 @@ Generation time : 2011-06-14 13:13:30 CEST
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.powermock</groupId>-->
-      <!--<artifactId>powermock-api-mockito</artifactId>-->
-      <!--<version>1.4.8</version>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>javax.portlet</groupId>
       <artifactId>portlet-api</artifactId>
-      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
@@ -149,7 +128,6 @@ Generation time : 2011-06-14 13:13:30 CEST
       <artifactId>test-utils-bc-core-composite-svc</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <profiles>

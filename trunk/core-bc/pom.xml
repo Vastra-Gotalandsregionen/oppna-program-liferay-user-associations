@@ -20,6 +20,6 @@ Generation time : 2011-06-14 13:13:30 CEST
   <name>${project.artifactId}</name>
 
   <modules>
-    <module>modules/portlet</module>
+    <module>modules/community-hook</module>
   </modules>
 </project>

@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
  * Date: 30/8-11
  * Time: 09:47
  */
-public class UserLoginActionTest {
+public class UserCommunityActionTest {
     @Before
     public void setUp() throws Exception {
         GroupLocalService groupLocalService = mock(GroupLocalService.class);
@@ -65,7 +65,7 @@ public class UserLoginActionTest {
 
     @Test
     public void testConstructor() throws Exception {
-        UserLoginAction action = new UserLoginAction();
+        UserCommunityAction action = new UserCommunityAction();
         List<String> matchers = (List<String>) ReflectionTestUtils.getField(action, "matcherList");
 
         assertEquals(2, matchers.size());
@@ -73,7 +73,7 @@ public class UserLoginActionTest {
 
     @Test
     public void testRun() throws Exception {
-        UserLoginAction action = new UserLoginAction();
+        UserCommunityAction action = new UserCommunityAction();
         UserLocalService userLocalService = mock(UserLocalService.class);
         ReflectionTestUtils.setField(action, "userLocalService", userLocalService);
         Portal portal = mock(Portal.class);
@@ -100,7 +100,7 @@ public class UserLoginActionTest {
     }
     @Test
     public void testRun2() throws Exception {
-        UserLoginAction action = new UserLoginAction();
+        UserCommunityAction action = new UserCommunityAction();
         UserLocalService userLocalService = mock(UserLocalService.class);
         ReflectionTestUtils.setField(action, "userLocalService", userLocalService);
         Portal portal = mock(Portal.class);
