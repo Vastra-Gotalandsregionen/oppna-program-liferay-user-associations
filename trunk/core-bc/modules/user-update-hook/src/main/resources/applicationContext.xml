@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config/>
+  <context:property-placeholder location="classpath:security.properties" ignore-unresolvable="true" />
+
+  <import resource="classpath:ldap-configuration.xml"/>
+
+  <!-- Ldap utilities -->
+  <bean id="userLdapAttributesDao" class="se.vgregion.userupdate.ldap.UserLdapAttributesDao" />
+
+  <!-- Liferay utilities-->
+  <bean id="userLocalService" class="com.liferay.portal.service.UserLocalServiceUtil"
+        factory-method="getService"/>
+  <bean id="contactLocalService" class="com.liferay.portal.service.ContactLocalServiceUtil"
+        factory-method="getService"/>
+
+
+  <bean id="userPropertyService" class="se.vgregion.userupdate.svc.UserPropertyService" />
+
+
+
+  <!--<bean id="userProfileUpdateService" class="se.vgregion.liferay.portal.userproperty.UserProfileUpdateService" />-->
+
+  <!--<bean id="userOrganizationUpdateService"-->
+        <!--class="se.vgregion.liferay.portal.organization.UserOrganizationUpdateService">-->
+  <!--</bean>-->
+
+
+  <!--<bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"-->
+        <!--factory-method="getService"/>-->
+
+  <!--<bean id="organizationLocalService" class="com.liferay.portal.service.OrganizationLocalServiceUtil"-->
+        <!--factory-method="getService"/>-->
+
+
+  <!--<bean id="expandoValueLocalService" class="com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil"-->
+        <!--factory-method="getService"/>-->
+
+  <!--<bean id="userProfileUpdateAction" class="se.vgregion.portal.liferay.hooks.UserUpdateAction"/>-->
+
+  <!--<bean id="userGroupUpdateService" class="se.vgregion.portal.liferay.group.UserGroupUpdateServiceImpl"/>-->
+
+  <!--<bean id="liferayRoleUtil" class="se.vgregion.portal.liferay.VgrLiferayRoleUtil"/>-->
+
+  <!--<bean id="liferayGroupUtil" class="se.vgregion.portal.liferay.VgrLiferayGroupUtil"/>-->
+
+  <!--<bean id="groupRoleSuffix" class="java.lang.String">-->
+    <!--<constructor-arg value="-GroupRole"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="roleSuffix" class="java.lang.String">-->
+    <!--<constructor-arg value="-Role"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="liferayDefaultCompanyId" class="java.lang.Long">-->
+    <!--<constructor-arg value="10132"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="liferayDefaultCompanyWebId" class="java.lang.String">-->
+    <!--<constructor-arg value="vgregion.se"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="lifraSystemUserName" class="java.lang.String">-->
+    <!--<constructor-arg value="lifra1"/>-->
+  <!--</bean>-->
+
+</beans>
+        
