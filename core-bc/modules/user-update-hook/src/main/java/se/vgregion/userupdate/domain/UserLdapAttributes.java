@@ -35,6 +35,7 @@ public class UserLdapAttributes {
     public String[] vgrLabeledURI;
     public String[] vgrStrukturPerson;
     public String[] vgrStrukturPersonDN;
+    public String[] StrukturGrupp;
 
     public PersonIdentityNumber getPersonIdentityNumber() {
         String pNo = null;
@@ -198,6 +199,14 @@ public class UserLdapAttributes {
 
     public void setVgrStrukturPersonDN(String[] vgrStrukturPersonDN) {
         this.vgrStrukturPersonDN = vgrStrukturPersonDN;
+    }
+
+    public String[] getStrukturGrupp() {
+        return StrukturGrupp;
+    }
+
+    public void setStrukturGrupp(String[] strukturGrupp) {
+        StrukturGrupp = strukturGrupp;
     }
 
     private void log(String msg, Throwable ex) {

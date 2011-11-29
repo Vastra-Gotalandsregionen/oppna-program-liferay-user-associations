@@ -2,8 +2,10 @@ package se.vgregion.userupdate.ldap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.LdapTemplate;
+import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +20,19 @@ public class UserLdapAttributesDao {
     private LdapTemplate ldapTemplate;
 
     public List<UserLdapAttributes> resolve(String uid) {
-        String base = "ou=anv";
+        String base = "ou=anv,o=vgr";
         String filter = String.format("(&(objectClass=person)(uid=%s))", uid);
         return ldapTemplate.search(base, filter, new UserLdapAttributesMapper());
+    }
+
+    public List<UnitLdapAttributes> resolve(UserLdapAttributes userLdapAttributes) {
+        List<UnitLdapAttributes> unitList = new ArrayList<UnitLdapAttributes>();
+        for (String orgDn: userLdapAttributes.getVgrStrukturPersonDN()) {
+            Object result = ldapTemplate.lookup(orgDn, new UnitContextMapper());
+            if (result != null && (result instanceof UnitLdapAttributes)) {
+                unitList.add((UnitLdapAttributes)result);
+            }
+        }
+        return unitList;
     }
 }
