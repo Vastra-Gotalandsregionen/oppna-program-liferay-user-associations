@@ -19,56 +19,24 @@
         factory-method="getService"/>
   <bean id="contactLocalService" class="com.liferay.portal.service.ContactLocalServiceUtil"
         factory-method="getService"/>
-
+  <bean id="expandoColumnLocalService" class="com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil"
+        factory-method="getService"/>
+  <bean id="expandoTableLocalService" class="com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="expandoValueLocalService" class="com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"
+        factory-method="getService" />
 
   <bean id="userPropertyService" class="se.vgregion.userupdate.svc.UserPropertyService" />
 
+  <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl" />
 
+  <bean id="expandoUtil" class="se.vgregion.liferay.expando.ExpandoUtil" />
 
-  <!--<bean id="userProfileUpdateService" class="se.vgregion.liferay.portal.userproperty.UserProfileUpdateService" />-->
+  <bean id="userGroupHelper" class="se.vgregion.liferay.usergroup.UserGroupHelperImpl" />
 
-  <!--<bean id="userOrganizationUpdateService"-->
-        <!--class="se.vgregion.liferay.portal.organization.UserOrganizationUpdateService">-->
-  <!--</bean>-->
-
-
-  <!--<bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"-->
-        <!--factory-method="getService"/>-->
-
-  <!--<bean id="organizationLocalService" class="com.liferay.portal.service.OrganizationLocalServiceUtil"-->
-        <!--factory-method="getService"/>-->
-
-
-  <!--<bean id="expandoValueLocalService" class="com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil"-->
-        <!--factory-method="getService"/>-->
-
-  <!--<bean id="userProfileUpdateAction" class="se.vgregion.portal.liferay.hooks.UserUpdateAction"/>-->
-
-  <!--<bean id="userGroupUpdateService" class="se.vgregion.portal.liferay.group.UserGroupUpdateServiceImpl"/>-->
-
-  <!--<bean id="liferayRoleUtil" class="se.vgregion.portal.liferay.VgrLiferayRoleUtil"/>-->
-
-  <!--<bean id="liferayGroupUtil" class="se.vgregion.portal.liferay.VgrLiferayGroupUtil"/>-->
-
-  <!--<bean id="groupRoleSuffix" class="java.lang.String">-->
-    <!--<constructor-arg value="-GroupRole"/>-->
-  <!--</bean>-->
-
-  <!--<bean id="roleSuffix" class="java.lang.String">-->
-    <!--<constructor-arg value="-Role"/>-->
-  <!--</bean>-->
-
-  <!--<bean id="liferayDefaultCompanyId" class="java.lang.Long">-->
-    <!--<constructor-arg value="10132"/>-->
-  <!--</bean>-->
-
-  <!--<bean id="liferayDefaultCompanyWebId" class="java.lang.String">-->
-    <!--<constructor-arg value="vgregion.se"/>-->
-  <!--</bean>-->
-
-  <!--<bean id="lifraSystemUserName" class="java.lang.String">-->
-    <!--<constructor-arg value="lifra1"/>-->
-  <!--</bean>-->
+  <bean id="liferayAutomation" class="se.vgregion.liferay.LiferayAutomation" />
 
 </beans>
         

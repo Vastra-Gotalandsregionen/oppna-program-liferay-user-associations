@@ -2,13 +2,24 @@ package se.vgregion.userupdate.svc;
 
 import com.liferay.portal.model.Contact;
 import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import se.vgregion.liferay.expando.UserExpandoHelper;
+import se.vgregion.liferay.usergroup.UserGroupHelper;
 import se.vgregion.userupdate.domain.PersonIdentityNumber;
+import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +35,17 @@ public class UserPropertyService {
 
     @Autowired
     private UserLocalService userLocalService;
+
+    @Autowired
+    private UserExpandoHelper userExpandoHelper;
+
+    @Autowired
+    private UserGroupHelper userGroupHelper;
+
+    @Value("${internal.access.gate.hosts}")
+    private String internalAccessGateHosts;
+
+    private static final String POSTFIX_INTERNAL_ONLY = "_internal_only";
 
     /**
      * Updates the birthday of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP
@@ -122,18 +144,228 @@ public class UserPropertyService {
     }
 
     public void updateTitle(User user, UserLdapAttributes userLdapAttributes) {
-        String title = userLdapAttributes.getHsaTitle();
-        if (title == null) {
-            title = userLdapAttributes.getTitle();
-        }
         try {
-            user.setJobTitle(title);
+            user.setJobTitle(userLdapAttributes.getTitle());
             userLocalService.updateUser(user);
         } catch (Exception e) {
             String msg = String.format("Failed to update Title [%s] for [%s]",
-                    title, user.getScreenName());
+                    userLdapAttributes.getTitle(), user.getScreenName());
             log(msg, e);
         }
+    }
+
+    public void updateHsaTitle(User user, UserLdapAttributes userLdapAttributes) {
+        String hsaTitle = userLdapAttributes.getHsaTitle();
+        if (hsaTitle == null) {
+            hsaTitle = "";
+        }
+        try {
+            userExpandoHelper.set("hsaTitle", hsaTitle, user);
+        } catch (Exception e) {
+            String msg = String.format("Failed to set HsaTitle [%s] for [%s]", userLdapAttributes.getHsaTitle(),
+                    user.getScreenName());
+            log(msg, e);
+        }
+    }
+
+    /**
+     * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
+     * catalog prescription code will be cleared.
+     *
+     * @param user the Liferay user to update
+     */
+    public void updatePrescriptionCode(User user, UserLdapAttributes userLdapAttributes) {
+        String prescriptionCode = userLdapAttributes.getHsaPersonPrescriptionCode();
+        if (prescriptionCode == null) {
+            prescriptionCode = "";
+        }
+        try {
+            userExpandoHelper.set("hsaPrescriptionCode", prescriptionCode, user);
+
+            if (StringUtils.isBlank(prescriptionCode)) {
+                userGroupHelper.removeUser("PliUsers", user);
+            } else {
+                userGroupHelper.addUser("PliUsers", user);
+            }
+        } catch (Exception e) {
+            String msg = String.format("Failed to set HsaPersonPerscriptionCode [%s] for [%s]",
+                    prescriptionCode, user.getScreenName());
+            log(msg, e);
+        }
+    }
+
+    /**
+     * Sets the Domino user flag on a Liferay user if the users has Domino access according to the LDAP catalog. If
+     * no user is found in LDAP the Domino user flag is set to false.
+     *
+     * @param user the Liferay user to update
+     */
+    public void updateIsDominoUser(User user, UserLdapAttributes userLdapAttributes) {
+        boolean isDominoUser = false;
+        if (StringUtils.isNotBlank(userLdapAttributes.getMail())
+                && userLdapAttributes.getMail().endsWith("@vgregion.se")) {
+            isDominoUser = true;
+        }
+        try {
+            userExpandoHelper.set("isDominoUser", isDominoUser, user);
+
+            if (isDominoUser) {
+                userGroupHelper.addUser("DominoUsers", user);
+                userGroupHelper.removeUser("NotDominoUsers", user);
+            } else {
+                userGroupHelper.addUser("NotDominoUsers", user);
+                userGroupHelper.removeUser("DominoUsers", user);
+            }
+        } catch (Exception e) {
+            String msg = String.format("Failed to update domino user [%s] state for [%s]", isDominoUser,
+                    user.getScreenName());
+            log(msg, e);
+        }
+    }
+
+    /**
+     * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
+     * catalog prescription code will be cleared.
+     *
+     * @param user the Liferay user to update
+     */
+    public void updateVgrAdmin(User user, UserLdapAttributes userLdapAttributes) {
+        String vgrAdmin = userLdapAttributes.getVgrAdminType();
+        if (vgrAdmin == null) {
+            vgrAdmin = "";
+        }
+
+        try {
+            userExpandoHelper.set("vgrAdminType", vgrAdmin, user);
+
+            if (StringUtils.isNotBlank(vgrAdmin)) {
+                userGroupHelper.addUser("VgrAdminUsers", user);
+            } else {
+                userGroupHelper.removeUser("VgrAdminUsers", user);
+            }
+        } catch (Exception e) {
+            String msg = String.format("Failed to update vgrAdminType [%s] for [%s]", vgrAdmin,
+                    user.getScreenName());
+        }
+    }
+
+    /**
+     * @param user the Liferay user to update
+     */
+    public void updateVgrLabeledURI(User user, UserLdapAttributes userLdapAttributes) {
+        String[] vgrLabeledURI = userLdapAttributes.getVgrLabeledURI();
+        if (vgrLabeledURI == null || vgrLabeledURI.length == 0) {
+            // default value
+            vgrLabeledURI = new String[]{"http://intra.vgregion.se/"};
+        }
+
+        try {
+            userExpandoHelper.set("vgrLabeledURI", vgrLabeledURI, user);
+        } catch (Exception e) {
+            String msg = String.format("Failed to update vgrLabeledURI [%s] for [%s]", vgrLabeledURI,
+                    user.getScreenName());
+            log(msg, e);
+        }
+
+    }
+
+    public void updateIsTandvard(User user, UserLdapAttributes userLdapAttributes) {
+        boolean isTandvard = lookupIsTandvard(userLdapAttributes);
+        try {
+        userExpandoHelper.set("isTandvard", isTandvard, user);
+        if (isTandvard) {
+            userGroupHelper.addUser("TandvardUsers", user);
+        } else {
+            userGroupHelper.removeUser("TandvardUsers", user);
+        }
+        } catch (Exception e) {
+            String msg = String.format("Failed to update isTandvard [%s] for [%s]", isTandvard,
+                    user.getScreenName());
+        }
+    }
+
+    private boolean lookupIsTandvard(UserLdapAttributes userLdapAttributes) {
+        List<String> strukturGrupps = Arrays.asList(userLdapAttributes.getStrukturGrupp());
+        boolean tandvard = false;
+        List<String> tandvardNames = Arrays.asList("Tandvård", "Folktandvården Västra Götaland");
+        for (String name : tandvardNames) {
+            if (strukturGrupps.contains(name)) {
+                tandvard = true;
+                break;
+            }
+        }
+        return tandvard;
+    }
+
+
+    public void updateIsPrimarvard(User user, List<UnitLdapAttributes> userOrganizations) {
+        boolean isPrimarvard = lookupIsPrimarvard(userOrganizations);
+
+        try {
+            userExpandoHelper.set("isPrimarvard", isPrimarvard, user);
+            if (isPrimarvard) {
+                userGroupHelper.addUser("VGPrimarvardUsers", user);
+            } else {
+                userGroupHelper.removeUser("VGPrimarvardUsers", user);
+            }
+        } catch (Exception e) {
+            String msg = String.format("Failed to update isPrimarvard [%s] for [%s]", isPrimarvard,
+                    user.getScreenName());
+            log(msg, e);
+        }
+    }
+
+    private boolean lookupIsPrimarvard(List<UnitLdapAttributes> userOrganizations) {
+        boolean isPrimarvard = false;
+        for (UnitLdapAttributes unit : userOrganizations) {
+            if (StringUtils.isNotBlank(unit.getVgrVardVal())) {
+                isPrimarvard = true;
+                break;
+            }
+        }
+        return isPrimarvard;
+    }
+
+
+    public void updateInternalAccessOnly(User user, HttpServletRequest request) {
+        List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));
+        boolean internalAccess = internalGateHosts.contains(request.getRemoteHost());
+
+        try {
+            userExpandoHelper.set("isInternalAccess", internalAccess, user);
+
+            List<UserGroup> allUserGroups = user.getUserGroups();
+            List<UserGroup> internalOnlyGroups = internalOnlyGroups(allUserGroups);
+
+            for (UserGroup internalAccessUserGroup : internalOnlyGroups) {
+                String userGroupWithRoleName = calculateUserGroupName(internalAccessUserGroup);
+                if (internalAccess) {
+                    userGroupHelper.addUser(userGroupWithRoleName, user);
+                } else {
+                    userGroupHelper.removeUser(userGroupWithRoleName, user);
+                }
+            }
+        } catch (Exception e) {
+            String msg = String.format("Failed to process isInternalAccess [%s] only for [%s]",
+                    internalAccess, user.getScreenName());
+            log(msg, e);
+        }
+    }
+
+    private List<UserGroup> internalOnlyGroups(List<UserGroup> allUserGroups) {
+        List<UserGroup> result = new ArrayList<UserGroup>();
+        for (UserGroup group : allUserGroups) {
+            if (group.getName().endsWith(POSTFIX_INTERNAL_ONLY)) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
+
+    private String calculateUserGroupName(UserGroup group) {
+        String groupWithRightsName = group.getName().substring(0,
+                group.getName().length() - POSTFIX_INTERNAL_ONLY.length());
+        return groupWithRightsName;
     }
 
     private void log(String msg, Throwable ex) {

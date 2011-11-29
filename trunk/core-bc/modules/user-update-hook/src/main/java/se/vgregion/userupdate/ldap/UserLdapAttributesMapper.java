@@ -2,6 +2,7 @@ package se.vgregion.userupdate.ldap;
 
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
+import org.springframework.ldap.core.simple.ParameterizedContextMapper;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
 /**
@@ -10,9 +11,9 @@ import se.vgregion.userupdate.domain.UserLdapAttributes;
  *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
-public class UserLdapAttributesMapper implements ContextMapper {
+public class UserLdapAttributesMapper implements ParameterizedContextMapper<UserLdapAttributes> {
     @Override
-    public Object mapFromContext(Object context) {
+    public UserLdapAttributes mapFromContext(Object context) {
         DirContextAdapter ctx = (DirContextAdapter) context;
 
         UserLdapAttributes attrs = new UserLdapAttributes();
@@ -29,9 +30,10 @@ public class UserLdapAttributesMapper implements ContextMapper {
         attrs.setHsaPersonIdentityNumber(ctx.getStringAttribute("hsaPersonIdentityNumber"));
         attrs.setHsaPersonPrescriptionCode(ctx.getStringAttribute("hsaPersonPrescriptionCode"));
         attrs.setVgrAdminType(ctx.getStringAttribute("vgrAdminType"));
-        attrs.setVgrLabeledURI(ctx.getStringAttributes("vgrLabeledURI"));
-        attrs.setVgrStrukturPerson(ctx.getStringAttributes("vgrStructurPerson"));
-        attrs.setVgrStrukturPersonDN(ctx.getStringAttributes("vgrStructurPersonDN"));
+        attrs.setVgrLabeledURI(ctx.getStringAttributes("labeledURI"));
+        attrs.setVgrStrukturPerson(ctx.getStringAttributes("vgrStrukturPerson"));
+        attrs.setVgrStrukturPersonDN(ctx.getStringAttributes("vgrStrukturPersonDN"));
+        attrs.setStrukturGrupp(ctx.getStringAttributes("StrukturGrupp"));
 
         String type = ctx.getDn().toString();
         if (type.contains("ou=personal")) {

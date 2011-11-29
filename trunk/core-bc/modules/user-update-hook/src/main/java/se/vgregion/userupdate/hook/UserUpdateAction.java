@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 import se.vgregion.userupdate.ldap.UserLdapAttributesDao;
 import se.vgregion.userupdate.svc.UserPropertyService;
@@ -33,29 +34,42 @@ public class UserUpdateAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         init();
+
         User user = lookupUser(request);
         if (user == null) {
             return;
         }
 
-        UserLdapAttributes userLdapAttributes = lookupInLdap(user.getScreenName());
+        try {
+            UserLdapAttributes userLdapAttributes = lookupInLdap(user.getScreenName());
 
-        if (!user.getScreenName().equals(userLdapAttributes.getUid())) {
-            String msg = String.format("Ldap användaren har felaktigt uid [%s] - [%s]", user.getScreenName(),
-                    userLdapAttributes.getUid());
-            LOGGER.error(msg);
-            throw new RuntimeException(msg);
+            if (!user.getScreenName().equals(userLdapAttributes.getUid())) {
+                String msg = String.format("Ldap användaren har felaktigt uid [%s] - [%s]", user.getScreenName(),
+                        userLdapAttributes.getUid());
+                LOGGER.error(msg);
+                throw new RuntimeException(msg);
+            }
+
+            userPropertyService.updateBirthday(user, userLdapAttributes);
+            userPropertyService.updateGender(user, userLdapAttributes);
+            userPropertyService.updateEmail(user, userLdapAttributes);
+            userPropertyService.updateFullName(user, userLdapAttributes);
+            userPropertyService.updateGivenName(user, userLdapAttributes);
+            userPropertyService.updateLastName(user, userLdapAttributes);
+            userPropertyService.updateTitle(user, userLdapAttributes);
+            userPropertyService.updateHsaTitle(user, userLdapAttributes);
+            userPropertyService.updatePrescriptionCode(user, userLdapAttributes);
+            userPropertyService.updateIsDominoUser(user, userLdapAttributes);
+            userPropertyService.updateVgrAdmin(user, userLdapAttributes);
+            userPropertyService.updateVgrLabeledURI(user, userLdapAttributes);
+            userPropertyService.updateIsTandvard(user, userLdapAttributes);
+
+            List<UnitLdapAttributes> unitLdapAttributesList = userLdapAttributesDao.resolve(userLdapAttributes);
+            userPropertyService.updateIsPrimarvard(user, unitLdapAttributesList);
+        } finally {
+            // internal access only check - has to be done last
+            userPropertyService.updateInternalAccessOnly(user, request);
         }
-
-        userPropertyService.updateBirthday(user, userLdapAttributes);
-        userPropertyService.updateGender(user, userLdapAttributes);
-        userPropertyService.updateEmail(user, userLdapAttributes);
-        userPropertyService.updateFullName(user, userLdapAttributes);
-        userPropertyService.updateGivenName(user, userLdapAttributes);
-        userPropertyService.updateLastName(user, userLdapAttributes);
-        userPropertyService.updateTitle(user, userLdapAttributes);
-
-        String apa = "apa";
     }
 
     private UserLdapAttributes lookupInLdap(String uid) {
@@ -108,18 +122,18 @@ public class UserUpdateAction extends Action {
 
     }
 
+    private ApplicationContext getApplicationContext() {
+        if (applicationContext == null) {
+            applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        }
+        return applicationContext;
+    }
+
     private void log(String msg, Throwable ex) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.warn(msg, ex);
         } else {
             LOGGER.warn(msg);
         }
-    }
-
-    private ApplicationContext getApplicationContext() {
-        if (applicationContext == null) {
-            applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        }
-        return applicationContext;
     }
 }
