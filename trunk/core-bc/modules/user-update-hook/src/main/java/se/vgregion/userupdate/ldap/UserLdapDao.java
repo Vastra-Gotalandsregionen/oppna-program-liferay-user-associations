@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
-public class UserLdapAttributesDao {
+public class UserLdapDao {
 
     @Autowired
     private LdapTemplate ldapTemplate;
@@ -22,13 +22,13 @@ public class UserLdapAttributesDao {
     public List<UserLdapAttributes> resolve(String uid) {
         String base = "ou=anv,o=vgr";
         String filter = String.format("(&(objectClass=person)(uid=%s))", uid);
-        return ldapTemplate.search(base, filter, new UserLdapAttributesMapper());
+        return ldapTemplate.search(base, filter, new UserMapper());
     }
 
     public List<UnitLdapAttributes> resolve(UserLdapAttributes userLdapAttributes) {
         List<UnitLdapAttributes> unitList = new ArrayList<UnitLdapAttributes>();
         for (String orgDn: userLdapAttributes.getVgrStrukturPersonDN()) {
-            Object result = ldapTemplate.lookup(orgDn, new UnitContextMapper());
+            Object result = ldapTemplate.lookup(orgDn, new UnitMapper());
             if (result != null && (result instanceof UnitLdapAttributes)) {
                 unitList.add((UnitLdapAttributes)result);
             }

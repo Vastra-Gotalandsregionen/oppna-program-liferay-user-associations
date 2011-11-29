@@ -11,7 +11,7 @@ import se.vgregion.userupdate.domain.UserLdapAttributes;
  *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
-public class UserLdapAttributesMapper implements ParameterizedContextMapper<UserLdapAttributes> {
+public class UserMapper implements ParameterizedContextMapper<UserLdapAttributes> {
     @Override
     public UserLdapAttributes mapFromContext(Object context) {
         DirContextAdapter ctx = (DirContextAdapter) context;

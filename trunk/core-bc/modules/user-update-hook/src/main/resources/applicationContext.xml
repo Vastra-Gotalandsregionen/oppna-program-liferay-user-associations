@@ -12,7 +12,7 @@
   <import resource="classpath:ldap-configuration.xml"/>
 
   <!-- Ldap utilities -->
-  <bean id="userLdapAttributesDao" class="se.vgregion.userupdate.ldap.UserLdapAttributesDao" />
+  <bean id="userLdapDao" class="se.vgregion.userupdate.ldap.UserLdapDao" />
 
   <!-- Liferay utilities-->
   <bean id="userLocalService" class="com.liferay.portal.service.UserLocalServiceUtil"
@@ -28,7 +28,7 @@
   <bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"
         factory-method="getService" />
 
-  <bean id="userPropertyService" class="se.vgregion.userupdate.svc.UserPropertyService" />
+  <bean id="userUpdateService" class="se.vgregion.userupdate.svc.UserUpdateService" />
 
   <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl" />
 
