@@ -27,8 +27,8 @@ import java.util.List;
  *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
-public class UserPropertyService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertyService.class);
+public class UserUpdateService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserUpdateService.class);
 
     @Autowired
     private ContactLocalService contactLocalService;
@@ -58,12 +58,17 @@ public class UserPropertyService {
         if (personIdentityNumber != null) {
             try {
                 Contact contact = user.getContact();
-                contact.setBirthday(personIdentityNumber.getBirthday());
-                contactLocalService.updateContact(contact);
+                if (!personIdentityNumber.getBirthday().equals(contact.getBirthday())) {
+                    contact.setBirthday(personIdentityNumber.getBirthday());
+                    contactLocalService.updateContact(contact);
+                }
             } catch (Exception e) {
                 String msg = String.format("Failed to update birthday for [%s]", user.getScreenName());
                 log(msg, e);
             }
+        } else {
+            String msg = String.format("Failed to update birthday, no personIdentityNumber for [%s]", user.getScreenName());
+            LOGGER.info(msg);
         }
     }
 
@@ -76,24 +81,33 @@ public class UserPropertyService {
     public void updateGender(User user, UserLdapAttributes userLdapAttributes) {
         PersonIdentityNumber personIdentityNumber = userLdapAttributes.getPersonIdentityNumber();
         if (personIdentityNumber != null) {
+            boolean isMale = personIdentityNumber.getGender() == PersonIdentityNumber.Gender.MALE;
             try {
                 Contact contact = user.getContact();
-                contact.setMale(personIdentityNumber.getGender() == PersonIdentityNumber.Gender.MALE);
-                contactLocalService.updateContact(contact);
+                if (isMale != contact.isMale()) {
+                    contact.setMale(isMale);
+                    contactLocalService.updateContact(contact);
+                }
             } catch (Exception e) {
                 String msg = String.format("Failed to update gender for [%s]", user.getScreenName());
                 log(msg, e);
             }
         } else {
-            String msg = String.format("Failed to update gender for [%s]", user.getScreenName());
+            String msg = String.format("Failed to update gender, no personIdentityNumber for [%s]", user.getScreenName());
             LOGGER.info(msg);
         }
     }
 
     public void updateEmail(User user, UserLdapAttributes userLdapAttributes) {
+        String email = userLdapAttributes.getMail();
+        if (email == null) {
+            email = "";
+        }
         try {
-            user.setEmailAddress(userLdapAttributes.getMail());
-            userLocalService.updateUser(user);
+            if (!email.equals(user.getEmailAddress())) {
+                user.setEmailAddress(userLdapAttributes.getMail());
+                userLocalService.updateUser(user);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update email [%s] for [%s]",
                     userLdapAttributes.getMail(), user.getScreenName());
@@ -107,11 +121,15 @@ public class UserPropertyService {
         if (fullName == null) {
             fullName = userLdapAttributes.getFullName();
         }
+        if (fullName == null) {
+            fullName = "";
+        }
         try {
-
             Contact contact = user.getContact();
-            contact.setUserName(fullName);
-            contactLocalService.updateContact(contact);
+            if (!fullName.equals(contact.getUserName())) {
+                contact.setUserName(fullName);
+                contactLocalService.updateContact(contact);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update fullName [%s] for [%s]",
                     fullName, user.getScreenName());
@@ -120,10 +138,16 @@ public class UserPropertyService {
     }
 
     public void updateGivenName(User user, UserLdapAttributes userLdapAttributes) {
+        // Can be improved if UserLdapAttributes.Type is considered
+        String givenName = userLdapAttributes.getGivenName();
+        if (givenName == null) {
+            givenName = "";
+        }
         try {
-            // Can be improved if UserLdapAttributes.Type is considered
-            user.setFirstName(userLdapAttributes.getGivenName());
-            userLocalService.updateUser(user);
+            if (!givenName.equals(user.getFirstName())) {
+                user.setFirstName(givenName);
+                userLocalService.updateUser(user);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update GivenName [%s] for [%s]",
                     userLdapAttributes.getGivenName(), user.getScreenName());
@@ -132,10 +156,16 @@ public class UserPropertyService {
     }
 
     public void updateLastName(User user, UserLdapAttributes userLdapAttributes) {
+        // Can be improved if UserLdapAttributes.Type is considered
+        String lastName = userLdapAttributes.getSn();
+        if (lastName == null) {
+            lastName = "";
+        }
         try {
-            // Can be improved if UserLdapAttributes.Type is considered
-            user.setLastName(userLdapAttributes.getSn());
-            userLocalService.updateUser(user);
+            if (!lastName.equals(user.getLastName())) {
+                user.setLastName(lastName);
+                userLocalService.updateUser(user);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update LastName [%s] for [%s]",
                     userLdapAttributes.getSn(), user.getScreenName());
@@ -144,9 +174,15 @@ public class UserPropertyService {
     }
 
     public void updateTitle(User user, UserLdapAttributes userLdapAttributes) {
+        String title = userLdapAttributes.getTitle();
+        if (title == null) {
+            title = "";
+        }
         try {
-            user.setJobTitle(userLdapAttributes.getTitle());
-            userLocalService.updateUser(user);
+            if (!title.equals(user.getJobTitle())) {
+                user.setJobTitle(title);
+                userLocalService.updateUser(user);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update Title [%s] for [%s]",
                     userLdapAttributes.getTitle(), user.getScreenName());
@@ -246,6 +282,7 @@ public class UserPropertyService {
         } catch (Exception e) {
             String msg = String.format("Failed to update vgrAdminType [%s] for [%s]", vgrAdmin,
                     user.getScreenName());
+            log(msg, e);
         }
     }
 
@@ -272,15 +309,16 @@ public class UserPropertyService {
     public void updateIsTandvard(User user, UserLdapAttributes userLdapAttributes) {
         boolean isTandvard = lookupIsTandvard(userLdapAttributes);
         try {
-        userExpandoHelper.set("isTandvard", isTandvard, user);
-        if (isTandvard) {
-            userGroupHelper.addUser("TandvardUsers", user);
-        } else {
-            userGroupHelper.removeUser("TandvardUsers", user);
-        }
+            userExpandoHelper.set("isTandvard", isTandvard, user);
+            if (isTandvard) {
+                userGroupHelper.addUser("TandvardUsers", user);
+            } else {
+                userGroupHelper.removeUser("TandvardUsers", user);
+            }
         } catch (Exception e) {
             String msg = String.format("Failed to update isTandvard [%s] for [%s]", isTandvard,
                     user.getScreenName());
+            log(msg, e);
         }
     }
 
@@ -338,11 +376,11 @@ public class UserPropertyService {
             List<UserGroup> internalOnlyGroups = internalOnlyGroups(allUserGroups);
 
             for (UserGroup internalAccessUserGroup : internalOnlyGroups) {
-                String userGroupWithRoleName = calculateUserGroupName(internalAccessUserGroup);
+                String userGroupWithRole = calculateUserGroupName(internalAccessUserGroup);
                 if (internalAccess) {
-                    userGroupHelper.addUser(userGroupWithRoleName, user);
+                    userGroupHelper.addUser(userGroupWithRole, user);
                 } else {
-                    userGroupHelper.removeUser(userGroupWithRoleName, user);
+                    userGroupHelper.removeUser(userGroupWithRole, user);
                 }
             }
         } catch (Exception e) {

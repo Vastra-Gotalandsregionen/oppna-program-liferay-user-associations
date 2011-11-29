@@ -10,7 +10,7 @@ import se.vgregion.userupdate.domain.UnitLdapAttributes;
  *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
-public class UnitContextMapper implements ParameterizedContextMapper<UnitLdapAttributes> {
+public class UnitMapper implements ParameterizedContextMapper<UnitLdapAttributes> {
     @Override
     public UnitLdapAttributes mapFromContext(Object ctx) {
         DirContextAdapter adapter = (DirContextAdapter) ctx;

@@ -10,8 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
-import se.vgregion.userupdate.ldap.UserLdapAttributesDao;
-import se.vgregion.userupdate.svc.UserPropertyService;
+import se.vgregion.userupdate.ldap.UserLdapDao;
+import se.vgregion.userupdate.svc.UserUpdateService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,8 +28,8 @@ public class UserUpdateAction extends Action {
 
     private ApplicationContext applicationContext;
     private UserLocalService userLocalService;
-    private UserLdapAttributesDao userLdapAttributesDao;
-    private UserPropertyService userPropertyService;
+    private UserLdapDao userLdapDao;
+    private UserUpdateService userUpdateService;
 
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
@@ -50,30 +50,30 @@ public class UserUpdateAction extends Action {
                 throw new RuntimeException(msg);
             }
 
-            userPropertyService.updateBirthday(user, userLdapAttributes);
-            userPropertyService.updateGender(user, userLdapAttributes);
-            userPropertyService.updateEmail(user, userLdapAttributes);
-            userPropertyService.updateFullName(user, userLdapAttributes);
-            userPropertyService.updateGivenName(user, userLdapAttributes);
-            userPropertyService.updateLastName(user, userLdapAttributes);
-            userPropertyService.updateTitle(user, userLdapAttributes);
-            userPropertyService.updateHsaTitle(user, userLdapAttributes);
-            userPropertyService.updatePrescriptionCode(user, userLdapAttributes);
-            userPropertyService.updateIsDominoUser(user, userLdapAttributes);
-            userPropertyService.updateVgrAdmin(user, userLdapAttributes);
-            userPropertyService.updateVgrLabeledURI(user, userLdapAttributes);
-            userPropertyService.updateIsTandvard(user, userLdapAttributes);
+            userUpdateService.updateBirthday(user, userLdapAttributes);
+            userUpdateService.updateGender(user, userLdapAttributes);
+            userUpdateService.updateEmail(user, userLdapAttributes);
+            userUpdateService.updateFullName(user, userLdapAttributes);
+            userUpdateService.updateGivenName(user, userLdapAttributes);
+            userUpdateService.updateLastName(user, userLdapAttributes);
+            userUpdateService.updateTitle(user, userLdapAttributes);
+            userUpdateService.updateHsaTitle(user, userLdapAttributes);
+            userUpdateService.updatePrescriptionCode(user, userLdapAttributes);
+            userUpdateService.updateIsDominoUser(user, userLdapAttributes);
+            userUpdateService.updateVgrAdmin(user, userLdapAttributes);
+            userUpdateService.updateVgrLabeledURI(user, userLdapAttributes);
+            userUpdateService.updateIsTandvard(user, userLdapAttributes);
 
-            List<UnitLdapAttributes> unitLdapAttributesList = userLdapAttributesDao.resolve(userLdapAttributes);
-            userPropertyService.updateIsPrimarvard(user, unitLdapAttributesList);
+            List<UnitLdapAttributes> unitLdapAttributesList = userLdapDao.resolve(userLdapAttributes);
+            userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
         } finally {
             // internal access only check - has to be done last
-            userPropertyService.updateInternalAccessOnly(user, request);
+            userUpdateService.updateInternalAccessOnly(user, request);
         }
     }
 
     private UserLdapAttributes lookupInLdap(String uid) {
-        List<UserLdapAttributes> userLdapAttributesList = userLdapAttributesDao.resolve(uid);
+        List<UserLdapAttributes> userLdapAttributesList = userLdapDao.resolve(uid);
         switch (userLdapAttributesList.size()) {
             case 0: {
                 String msg = String.format("Användaren [%s] hittades inte i LDAP", uid);
@@ -112,12 +112,12 @@ public class UserUpdateAction extends Action {
         if (userLocalService == null) {
             userLocalService = (UserLocalService) getApplicationContext().getBean("userLocalService");
         }
-        if (userLdapAttributesDao == null) {
-            userLdapAttributesDao = (UserLdapAttributesDao) getApplicationContext().getBean("userLdapAttributesDao");
+        if (userLdapDao == null) {
+            userLdapDao = (UserLdapDao) getApplicationContext().getBean("userLdapDao");
         }
-        if (userPropertyService == null) {
-            userPropertyService = (UserPropertyService) getApplicationContext().
-                    getBean("userPropertyService");
+        if (userUpdateService == null) {
+            userUpdateService = (UserUpdateService) getApplicationContext().
+                    getBean("userUpdateService");
         }
 
     }
