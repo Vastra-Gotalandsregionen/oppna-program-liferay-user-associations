@@ -1,6 +1,9 @@
 package se.vgregion.userupdate.svc;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.Contact;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.ContactLocalService;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import se.vgregion.liferay.expando.UserExpandoHelper;
+import se.vgregion.liferay.organization.OrganizationHelper;
 import se.vgregion.liferay.usergroup.UserGroupHelper;
 import se.vgregion.userupdate.domain.PersonIdentityNumber;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
@@ -44,6 +48,9 @@ public class UserUpdateService {
 
     @Value("${internal.access.gate.hosts}")
     private String internalAccessGateHosts;
+
+    @Autowired
+    private OrganizationHelper organizationHelper;
 
     private static final String POSTFIX_INTERNAL_ONLY = "_internal_only";
 
@@ -323,13 +330,17 @@ public class UserUpdateService {
     }
 
     private boolean lookupIsTandvard(UserLdapAttributes userLdapAttributes) {
-        List<String> strukturGrupps = Arrays.asList(userLdapAttributes.getStrukturGrupp());
         boolean tandvard = false;
-        List<String> tandvardNames = Arrays.asList("Tandvård", "Folktandvården Västra Götaland");
-        for (String name : tandvardNames) {
-            if (strukturGrupps.contains(name)) {
-                tandvard = true;
-                break;
+
+        String[] strukturGrupp = userLdapAttributes.getStrukturGrupp();
+        if (strukturGrupp != null) {
+            List<String> strukturGrupps = Arrays.asList(strukturGrupp);
+            List<String> tandvardNames = Arrays.asList("Tandvård", "Folktandvården Västra Götaland");
+            for (String name : tandvardNames) {
+                if (strukturGrupps.contains(name)) {
+                    tandvard = true;
+                    break;
+                }
             }
         }
         return tandvard;
@@ -364,6 +375,61 @@ public class UserUpdateService {
         return isPrimarvard;
     }
 
+    public void updateOrganization(User user, UserLdapAttributes userLdapAttributes) {
+        List<String> organizationNames = lookupOrganizationName(userLdapAttributes);
+        try {
+            // add to organizations
+            List<String> addUserToOrganization = new ArrayList<String>();
+            for (String organizationName : organizationNames) {
+                if (! organizationHelper.isMember(organizationName, user)) {
+                    addUserToOrganization.add(organizationName);
+                }
+            }
+            // remove from organizations
+            List<String> removeUserFromOrganization = new ArrayList<String>();
+            List<Organization> oldUserOrganizations = user.getOrganizations();
+            for (Organization userOrganization : oldUserOrganizations) {
+                if (!organizationNames.contains(userOrganization.getName())) {
+                    removeUserFromOrganization.add(userOrganization.getName());
+                }
+            }
+
+            organizationHelper.addUser(addUserToOrganization, user);
+
+
+        } catch (Exception e) {
+            String msg = String.format("Failed to update organization membership [%s] for [%s]",
+                    organizationNames.toString(), user.getScreenName());
+            log(msg, e);
+        }
+
+    }
+
+    private List<String> lookupOrganizationName(UserLdapAttributes userLdapAttributes) {
+        List<String> organizations = new ArrayList<String>();
+        String[] unitDNs = userLdapAttributes.getVgrStrukturPersonDN();
+        for (String unitDN : unitDNs) {
+            String orgName = extractOrganization(unitDN);
+            if (StringUtils.isNotBlank(orgName)) {
+                organizations.add(orgName);
+            }
+        }
+        return organizations;
+    }
+
+    private String extractOrganization(String unitDN) {
+        String[] units = unitDN.split(",");
+        if (units.length - 3 >= 0) {
+            String[] namePart = units[units.length - 3].split("=");
+            if (namePart.length == 2) {
+                return namePart[1];
+            } else {
+                String msg = String.format("Strange organization name [%s]", units[units.length - 3]);
+                LOGGER.warn(msg);
+            }
+        }
+        return null;
+    }
 
     public void updateInternalAccessOnly(User user, HttpServletRequest request) {
         List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));

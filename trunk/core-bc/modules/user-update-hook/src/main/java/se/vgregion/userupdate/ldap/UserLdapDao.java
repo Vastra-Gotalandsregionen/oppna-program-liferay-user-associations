@@ -27,10 +27,12 @@ public class UserLdapDao {
 
     public List<UnitLdapAttributes> resolve(UserLdapAttributes userLdapAttributes) {
         List<UnitLdapAttributes> unitList = new ArrayList<UnitLdapAttributes>();
-        for (String orgDn: userLdapAttributes.getVgrStrukturPersonDN()) {
-            Object result = ldapTemplate.lookup(orgDn, new UnitMapper());
-            if (result != null && (result instanceof UnitLdapAttributes)) {
-                unitList.add((UnitLdapAttributes)result);
+        if (userLdapAttributes.getVgrStrukturPersonDN() != null) {
+            for (String orgDn : userLdapAttributes.getVgrStrukturPersonDN()) {
+                Object result = ldapTemplate.lookup(orgDn, new UnitMapper());
+                if (result != null && (result instanceof UnitLdapAttributes)) {
+                    unitList.add((UnitLdapAttributes) result);
+                }
             }
         }
         return unitList;
