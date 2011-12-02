@@ -20,7 +20,7 @@ Generation time : 2011-06-14 13:13:30 CEST
   <name>${project.artifactId}</name>
 
   <modules>
-    <module>modules/community-hook</module>
-    <module>modules/user-update-hook</module>
+    <module>modules/hook/community-hook</module>
+    <module>modules/hook/user-update-hook</module>
   </modules>
 </project>
