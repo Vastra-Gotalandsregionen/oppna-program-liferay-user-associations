@@ -1,26 +1,28 @@
 package se.vgregion.userupdate.hook;
 
-import com.liferay.portal.kernel.events.Action;
-import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.UserLocalService;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 import se.vgregion.userupdate.ldap.UserLdapDao;
 import se.vgregion.userupdate.svc.UserUpdateService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import com.liferay.portal.kernel.events.Action;
+import com.liferay.portal.kernel.events.ActionException;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.UserLocalService;
 
 /**
- * Created by IntelliJ IDEA.
- * Created: 2011-11-22 23:37
- *
+ * Created by IntelliJ IDEA. Created: 2011-11-22 23:37
+ * 
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UserUpdateAction extends Action {
@@ -63,6 +65,7 @@ public class UserUpdateAction extends Action {
             userUpdateService.updateVgrAdmin(user, userLdapAttributes);
             userUpdateService.updateVgrLabeledURI(user, userLdapAttributes);
             userUpdateService.updateIsTandvard(user, userLdapAttributes);
+            userUpdateService.updateOrganization(user, userLdapAttributes);
 
             List<UnitLdapAttributes> unitLdapAttributesList = userLdapDao.resolve(userLdapAttributes);
             userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
@@ -116,8 +119,7 @@ public class UserUpdateAction extends Action {
             userLdapDao = (UserLdapDao) getApplicationContext().getBean("userLdapDao");
         }
         if (userUpdateService == null) {
-            userUpdateService = (UserUpdateService) getApplicationContext().
-                    getBean("userUpdateService");
+            userUpdateService = (UserUpdateService) getApplicationContext().getBean("userUpdateService");
         }
 
     }
