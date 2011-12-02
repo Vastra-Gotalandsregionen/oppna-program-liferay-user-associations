@@ -1,18 +1,17 @@
 package se.vgregion.userupdate.svc;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
-import com.liferay.portal.service.ContactLocalService;
-import com.liferay.portal.service.UserLocalService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import se.vgregion.liferay.expando.UserExpandoHelper;
 import se.vgregion.liferay.organization.OrganizationHelper;
 import se.vgregion.liferay.usergroup.UserGroupHelper;
@@ -20,15 +19,16 @@ import se.vgregion.userupdate.domain.PersonIdentityNumber;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.liferay.portal.model.Contact;
+import com.liferay.portal.model.Organization;
+import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserGroup;
+import com.liferay.portal.service.ContactLocalService;
+import com.liferay.portal.service.UserLocalService;
 
 /**
- * Created by IntelliJ IDEA.
- * Created: 2011-11-28 15:16
- *
+ * Created by IntelliJ IDEA. Created: 2011-11-28 15:16
+ * 
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UserUpdateService {
@@ -57,8 +57,9 @@ public class UserUpdateService {
     /**
      * Updates the birthday of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP
      * catalog or person identity number is not set, birthday will be unmodified.
-     *
-     * @param user the Liferay user to update
+     * 
+     * @param user
+     *            the Liferay user to update
      */
     public void updateBirthday(User user, UserLdapAttributes userLdapAttributes) {
         PersonIdentityNumber personIdentityNumber = userLdapAttributes.getPersonIdentityNumber();
@@ -74,7 +75,8 @@ public class UserUpdateService {
                 log(msg, e);
             }
         } else {
-            String msg = String.format("Failed to update birthday, no personIdentityNumber for [%s]", user.getScreenName());
+            String msg = String.format("Failed to update birthday, no personIdentityNumber for [%s]",
+                    user.getScreenName());
             LOGGER.info(msg);
         }
     }
@@ -82,8 +84,9 @@ public class UserUpdateService {
     /**
      * Updates the gender of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP catalog
      * or person identity number is not set, gender will be unmodified.
-     *
-     * @param user the Liferay user to update
+     * 
+     * @param user
+     *            the Liferay user to update
      */
     public void updateGender(User user, UserLdapAttributes userLdapAttributes) {
         PersonIdentityNumber personIdentityNumber = userLdapAttributes.getPersonIdentityNumber();
@@ -100,7 +103,8 @@ public class UserUpdateService {
                 log(msg, e);
             }
         } else {
-            String msg = String.format("Failed to update gender, no personIdentityNumber for [%s]", user.getScreenName());
+            String msg = String.format("Failed to update gender, no personIdentityNumber for [%s]",
+                    user.getScreenName());
             LOGGER.info(msg);
         }
     }
@@ -116,8 +120,8 @@ public class UserUpdateService {
                 userLocalService.updateUser(user);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to update email [%s] for [%s]",
-                    userLdapAttributes.getMail(), user.getScreenName());
+            String msg = String.format("Failed to update email [%s] for [%s]", userLdapAttributes.getMail(),
+                    user.getScreenName());
             log(msg, e);
         }
     }
@@ -138,8 +142,7 @@ public class UserUpdateService {
                 contactLocalService.updateContact(contact);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to update fullName [%s] for [%s]",
-                    fullName, user.getScreenName());
+            String msg = String.format("Failed to update fullName [%s] for [%s]", fullName, user.getScreenName());
             log(msg, e);
         }
     }
@@ -174,8 +177,8 @@ public class UserUpdateService {
                 userLocalService.updateUser(user);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to update LastName [%s] for [%s]",
-                    userLdapAttributes.getSn(), user.getScreenName());
+            String msg = String.format("Failed to update LastName [%s] for [%s]", userLdapAttributes.getSn(),
+                    user.getScreenName());
             log(msg, e);
         }
     }
@@ -191,8 +194,8 @@ public class UserUpdateService {
                 userLocalService.updateUser(user);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to update Title [%s] for [%s]",
-                    userLdapAttributes.getTitle(), user.getScreenName());
+            String msg = String.format("Failed to update Title [%s] for [%s]", userLdapAttributes.getTitle(),
+                    user.getScreenName());
             log(msg, e);
         }
     }
@@ -214,8 +217,9 @@ public class UserUpdateService {
     /**
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
-     *
-     * @param user the Liferay user to update
+     * 
+     * @param user
+     *            the Liferay user to update
      */
     public void updatePrescriptionCode(User user, UserLdapAttributes userLdapAttributes) {
         String prescriptionCode = userLdapAttributes.getHsaPersonPrescriptionCode();
@@ -231,8 +235,8 @@ public class UserUpdateService {
                 userGroupHelper.addUser("PliUsers", user);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to set HsaPersonPerscriptionCode [%s] for [%s]",
-                    prescriptionCode, user.getScreenName());
+            String msg = String.format("Failed to set HsaPersonPerscriptionCode [%s] for [%s]", prescriptionCode,
+                    user.getScreenName());
             log(msg, e);
         }
     }
@@ -240,8 +244,9 @@ public class UserUpdateService {
     /**
      * Sets the Domino user flag on a Liferay user if the users has Domino access according to the LDAP catalog. If
      * no user is found in LDAP the Domino user flag is set to false.
-     *
-     * @param user the Liferay user to update
+     * 
+     * @param user
+     *            the Liferay user to update
      */
     public void updateIsDominoUser(User user, UserLdapAttributes userLdapAttributes) {
         boolean isDominoUser = false;
@@ -269,8 +274,9 @@ public class UserUpdateService {
     /**
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
-     *
-     * @param user the Liferay user to update
+     * 
+     * @param user
+     *            the Liferay user to update
      */
     public void updateVgrAdmin(User user, UserLdapAttributes userLdapAttributes) {
         String vgrAdmin = userLdapAttributes.getVgrAdminType();
@@ -294,13 +300,14 @@ public class UserUpdateService {
     }
 
     /**
-     * @param user the Liferay user to update
+     * @param user
+     *            the Liferay user to update
      */
     public void updateVgrLabeledURI(User user, UserLdapAttributes userLdapAttributes) {
         String[] vgrLabeledURI = userLdapAttributes.getVgrLabeledURI();
         if (vgrLabeledURI == null || vgrLabeledURI.length == 0) {
             // default value
-            vgrLabeledURI = new String[]{"http://intra.vgregion.se/"};
+            vgrLabeledURI = new String[] { "http://intra.vgregion.se/" };
         }
 
         try {
@@ -346,7 +353,6 @@ public class UserUpdateService {
         return tandvard;
     }
 
-
     public void updateIsPrimarvard(User user, List<UnitLdapAttributes> userOrganizations) {
         boolean isPrimarvard = lookupIsPrimarvard(userOrganizations);
 
@@ -377,11 +383,12 @@ public class UserUpdateService {
 
     public void updateOrganization(User user, UserLdapAttributes userLdapAttributes) {
         List<String> organizationNames = lookupOrganizationName(userLdapAttributes);
+        long companyId = user.getCompanyId();
         try {
             // add to organizations
             List<String> addUserToOrganization = new ArrayList<String>();
             for (String organizationName : organizationNames) {
-                if (! organizationHelper.isMember(organizationName, user)) {
+                if (!organizationHelper.isMember(organizationName, user)) {
                     addUserToOrganization.add(organizationName);
                 }
             }
@@ -394,8 +401,18 @@ public class UserUpdateService {
                 }
             }
 
-            organizationHelper.addUser(addUserToOrganization, user);
+            for (String organizationName : addUserToOrganization) {
+                Organization organization = organizationHelper.findByName(organizationName, companyId);
+                if (organization == null) {
+                    organization = organizationHelper.createIfNeeded(organizationName, companyId);
+                }
+                organizationHelper.addUser(organization, user);
+            }
 
+            for (String organizationName : removeUserFromOrganization) {
+                Organization organization = organizationHelper.findByName(organizationName, companyId);
+                organizationHelper.removeUser(organization, user);
+            }
 
         } catch (Exception e) {
             String msg = String.format("Failed to update organization membership [%s] for [%s]",
@@ -450,8 +467,8 @@ public class UserUpdateService {
                 }
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to process isInternalAccess [%s] only for [%s]",
-                    internalAccess, user.getScreenName());
+            String msg = String.format("Failed to process isInternalAccess [%s] only for [%s]", internalAccess,
+                    user.getScreenName());
             log(msg, e);
         }
     }
