@@ -116,7 +116,7 @@ public class UserUpdateService {
         }
         try {
             if (!email.equals(user.getEmailAddress())) {
-                user.setEmailAddress(userLdapAttributes.getMail());
+                user.setEmailAddress(email);
                 userLocalService.updateUser(user);
             }
         } catch (Exception e) {
@@ -265,7 +265,7 @@ public class UserUpdateService {
                 userGroupHelper.removeUser("DominoUsers", user);
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to update domino user [%s] state for [%s]", isDominoUser,
+            String msg = String.format("Failed to update domino user state [%s] for [%s]", isDominoUser,
                     user.getScreenName());
             log(msg, e);
         }
@@ -313,8 +313,8 @@ public class UserUpdateService {
         try {
             userExpandoHelper.set("vgrLabeledURI", vgrLabeledURI, user);
         } catch (Exception e) {
-            String msg = String.format("Failed to update vgrLabeledURI [%s] for [%s]", vgrLabeledURI,
-                    user.getScreenName());
+            String msg = String.format("Failed to update vgrLabeledURI %s for [%s]",
+                    Arrays.toString(vgrLabeledURI), user.getScreenName());
             log(msg, e);
         }
 
@@ -415,7 +415,7 @@ public class UserUpdateService {
             }
 
         } catch (Exception e) {
-            String msg = String.format("Failed to update organization membership [%s] for [%s]",
+            String msg = String.format("Failed to update organization membership %s for [%s]",
                     organizationNames.toString(), user.getScreenName());
             log(msg, e);
         }
@@ -467,7 +467,7 @@ public class UserUpdateService {
                 }
             }
         } catch (Exception e) {
-            String msg = String.format("Failed to process isInternalAccess [%s] only for [%s]", internalAccess,
+            String msg = String.format("Failed to process isInternalAccess [%s] for [%s]", internalAccess,
                     user.getScreenName());
             log(msg, e);
         }

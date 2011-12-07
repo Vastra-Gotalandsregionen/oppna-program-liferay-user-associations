@@ -32,6 +32,10 @@ Generation time : 2011-06-14 13:13:30 CEST
     </plugins>
   </build>
 
+  <properties>
+    <liferay.version>6.0.6</liferay.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.portlet</groupId>
@@ -40,11 +44,6 @@ Generation time : 2011-06-14 13:13:30 CEST
     <dependency>
       <groupId>com.sun.portal</groupId>
       <artifactId>portlet-container</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>se.vgregion.javg</groupId>
-      <artifactId>javg-rt-support</artifactId>
-      <version>${javg.version}</version>
     </dependency>
     <dependency>
       <groupId>taglibs</groupId>
@@ -100,7 +99,6 @@ Generation time : 2011-06-14 13:13:30 CEST
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-impl</artifactId>
       <version>${liferay.version}</version>
-      <!--<classifier>ee</classifier>-->
       <scope>test</scope>
     </dependency>
     <dependency>
