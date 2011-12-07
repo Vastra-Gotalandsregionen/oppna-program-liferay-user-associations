@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.liferay-user-associations</groupId>
@@ -31,9 +32,14 @@
 
   <dependencies>
     <dependency>
-	  <groupId>se.vgregion.commons-util</groupId>
-	  <artifactId>commons-util-core-bc-composite-svc-liferay</artifactId>
-	  <version>3.8</version>
+      <groupId>se.vgregion.commons-util</groupId>
+      <artifactId>commons-util-core-bc-composite-svc-liferay</artifactId>
+      <version>3.8</version>
+    </dependency>
+    <dependency>
+      <groupId>se.vgregion.healthcare-context</groupId>
+      <artifactId>healthcare-context-patient-context-composite-webcomp</artifactId>
+      <version>1.10</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
