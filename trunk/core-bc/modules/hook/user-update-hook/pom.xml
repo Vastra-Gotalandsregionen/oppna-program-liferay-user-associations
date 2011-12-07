@@ -64,6 +64,12 @@
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-service</artifactId>
       <version>${liferay.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.liferay.portal</groupId>
+      <artifactId>portal-service</artifactId>
+      <version>${liferay.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -115,16 +121,6 @@
       <groupId>se.vgregion.test-utils</groupId>
       <artifactId>test-utils-bc-core-composite-svc</artifactId>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aspects</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-    </dependency>
-    -->
   </dependencies>
 
 </project>
