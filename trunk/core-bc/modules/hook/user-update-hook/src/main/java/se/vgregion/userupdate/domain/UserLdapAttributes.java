@@ -2,6 +2,7 @@ package se.vgregion.userupdate.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.vgregion.portal.patient.event.PersonNummer;
 
 import javax.naming.Name;
 
@@ -37,7 +38,7 @@ public class UserLdapAttributes {
     public String[] vgrStrukturPersonDN;
     public String[] StrukturGrupp;
 
-    public PersonIdentityNumber getPersonIdentityNumber() {
+    public PersonNummer getPersonNummer() {
         String pNo = null;
         switch (getType()) {
             case PERSONAL:
@@ -53,15 +54,9 @@ public class UserLdapAttributes {
                 String msg = String.format("Ldap user of type [%s] has no personIdentityNumber information",
                         getType());
                 LOGGER.info(msg);
-                return null;
+                pNo = null;
         }
-        try {
-            return new PersonIdentityNumber(pNo);
-        } catch (Exception e) {
-            String msg = String.format("User [%s] has no personIdentityNumber i LDAP", uid);
-            log(msg, e);
-            return null;
-        }
+        return PersonNummer.personummer(pNo);
     }
 
 

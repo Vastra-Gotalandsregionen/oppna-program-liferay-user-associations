@@ -1,7 +1,10 @@
 package se.vgregion.userupdate.svc;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import se.vgregion.liferay.expando.UserExpandoHelper;
 import se.vgregion.liferay.organization.OrganizationHelper;
 import se.vgregion.liferay.usergroup.UserGroupHelper;
-import se.vgregion.userupdate.domain.PersonIdentityNumber;
+import se.vgregion.portal.patient.event.PersonNummer;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
@@ -33,6 +36,7 @@ import com.liferay.portal.service.UserLocalService;
  */
 public class UserUpdateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserUpdateService.class);
+    private static final DateFormat DF = new SimpleDateFormat("yyyyMMdd");
 
     @Autowired
     private ContactLocalService contactLocalService;
@@ -62,12 +66,14 @@ public class UserUpdateService {
      *            the Liferay user to update
      */
     public void updateBirthday(User user, UserLdapAttributes userLdapAttributes) {
-        PersonIdentityNumber personIdentityNumber = userLdapAttributes.getPersonIdentityNumber();
-        if (personIdentityNumber != null) {
+        PersonNummer personNummer = userLdapAttributes.getPersonNummer();
+        if (personNummer.getType() != PersonNummer.Type.INVALID) {
             try {
                 Contact contact = user.getContact();
-                if (!personIdentityNumber.getBirthday().equals(contact.getBirthday())) {
-                    contact.setBirthday(personIdentityNumber.getBirthday());
+                Date pNoDate = DF.parse(personNummer.getFull().substring(0, 8));
+                Date contactDate = contact.getBirthday();
+                if (!pNoDate.equals(contactDate)) {
+                    contact.setBirthday(pNoDate);
                     contactLocalService.updateContact(contact);
                 }
             } catch (Exception e) {
@@ -89,9 +95,9 @@ public class UserUpdateService {
      *            the Liferay user to update
      */
     public void updateGender(User user, UserLdapAttributes userLdapAttributes) {
-        PersonIdentityNumber personIdentityNumber = userLdapAttributes.getPersonIdentityNumber();
-        if (personIdentityNumber != null) {
-            boolean isMale = personIdentityNumber.getGender() == PersonIdentityNumber.Gender.MALE;
+        PersonNummer personNummer = userLdapAttributes.getPersonNummer();
+        if (personNummer.getType() != PersonNummer.Type.INVALID) {
+            boolean isMale = personNummer.getGender() == PersonNummer.Gender.MALE;
             try {
                 Contact contact = user.getContact();
                 if (isMale != contact.isMale()) {
