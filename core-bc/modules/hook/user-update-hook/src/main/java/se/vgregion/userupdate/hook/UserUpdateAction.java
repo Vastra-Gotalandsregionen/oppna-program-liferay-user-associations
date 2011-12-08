@@ -48,7 +48,6 @@ public class UserUpdateAction extends Action {
             if (!user.getScreenName().equals(userLdapAttributes.getUid())) {
                 String msg = String.format("Ldap användaren har felaktigt uid [%s] - [%s]", user.getScreenName(),
                         userLdapAttributes.getUid());
-                LOGGER.error(msg);
                 throw new RuntimeException(msg);
             }
 
@@ -69,6 +68,8 @@ public class UserUpdateAction extends Action {
 
             List<UnitLdapAttributes> unitLdapAttributesList = userLdapDao.resolve(userLdapAttributes);
             userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
+        } catch (Exception e) {
+            log(e.getMessage(), e);
         } finally {
             // internal access only check - has to be done last
             userUpdateService.updateInternalAccessOnly(user, request);
@@ -80,14 +81,12 @@ public class UserUpdateAction extends Action {
         switch (userLdapAttributesList.size()) {
             case 0: {
                 String msg = String.format("Användaren [%s] hittades inte i LDAP", uid);
-                LOGGER.error(msg);
                 throw new RuntimeException(msg);
             }
             case 1:
                 return userLdapAttributesList.get(0);
             default: {
                 String msg = String.format("Mer än en användaren [%s] hittades i LDAP", uid);
-                LOGGER.error(msg);
                 throw new RuntimeException(msg);
             }
         }
