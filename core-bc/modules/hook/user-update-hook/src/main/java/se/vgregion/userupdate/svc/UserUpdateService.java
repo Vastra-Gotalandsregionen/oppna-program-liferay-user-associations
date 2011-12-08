@@ -431,10 +431,13 @@ public class UserUpdateService {
     private List<String> lookupOrganizationName(UserLdapAttributes userLdapAttributes) {
         List<String> organizations = new ArrayList<String>();
         String[] unitDNs = userLdapAttributes.getVgrStrukturPersonDN();
-        for (String unitDN : unitDNs) {
-            String orgName = extractOrganization(unitDN);
-            if (StringUtils.isNotBlank(orgName)) {
-                organizations.add(orgName);
+
+        if (unitDNs != null) {
+            for (String unitDN : unitDNs) {
+                String orgName = extractOrganization(unitDN);
+                if (StringUtils.isNotBlank(orgName)) {
+                    organizations.add(orgName);
+                }
             }
         }
         return organizations;
