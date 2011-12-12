@@ -464,38 +464,12 @@ public class UserUpdateService {
         try {
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
 
-            List<UserGroup> allUserGroups = user.getUserGroups();
-            List<UserGroup> internalOnlyGroups = internalOnlyGroups(allUserGroups);
-
-            for (UserGroup internalAccessUserGroup : internalOnlyGroups) {
-                String userGroupWithRole = calculateUserGroupName(internalAccessUserGroup);
-                if (internalAccess) {
-                    userGroupHelper.addUser(userGroupWithRole, user);
-                } else {
-                    userGroupHelper.removeUser(userGroupWithRole, user);
-                }
-            }
+            userGroupHelper.processInternalAccessOnly(user);
         } catch (Exception e) {
             String msg = String.format("Failed to process isInternalAccess [%s] for [%s]", internalAccess,
                     user.getScreenName());
             log(msg, e);
         }
-    }
-
-    private List<UserGroup> internalOnlyGroups(List<UserGroup> allUserGroups) {
-        List<UserGroup> result = new ArrayList<UserGroup>();
-        for (UserGroup group : allUserGroups) {
-            if (group.getName().endsWith(POSTFIX_INTERNAL_ONLY)) {
-                result.add(group);
-            }
-        }
-        return result;
-    }
-
-    private String calculateUserGroupName(UserGroup group) {
-        String groupWithRightsName = group.getName().substring(0,
-                group.getName().length() - POSTFIX_INTERNAL_ONLY.length());
-        return groupWithRightsName;
     }
 
     private void log(String msg, Throwable ex) {

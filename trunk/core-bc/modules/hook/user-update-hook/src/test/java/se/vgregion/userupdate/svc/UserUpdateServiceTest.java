@@ -7,6 +7,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
+import com.liferay.portlet.expando.model.ExpandoBridge;
 import org.apache.log4j.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -833,20 +834,15 @@ public class UserUpdateServiceTest {
     }
 
     @Test
-    public void testUpdateInternalAccessOnly_internalAccess() throws Exception {
+    public void testUpdateInternalAccessOnly_updateInternalAccess() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         when(request.getRemoteHost()).thenReturn("2.2.2.2");
-        UserGroup ug1 = mock(UserGroup.class);
-        when(ug1.getName()).thenReturn("ug1_internal_only");
-        UserGroup ug2 = mock(UserGroup.class);
-        when(ug2.getName()).thenReturn("ug2");
-        when(user.getUserGroups()).thenReturn(Arrays.asList(ug1, ug2));
 
         userUpdateService.updateInternalAccessOnly(user, request);
 
         verify(userExpandoHelper).set("isInternalAccess", true, user);
-        verify(userGroupHelper).addUser("ug1", user);
+        verify(userGroupHelper).processInternalAccessOnly(user);
     }
 
     @Test
@@ -863,18 +859,7 @@ public class UserUpdateServiceTest {
         userUpdateService.updateInternalAccessOnly(user, request);
 
         verify(userExpandoHelper).set("isInternalAccess", false, user);
-        verify(userGroupHelper).removeUser("ug1", user);
-    }
-
-    @Test
-    public void testUpdateInternalAccessOnly_noGroups() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-
-        when(request.getRemoteHost()).thenReturn("2.2.2.2");
-
-        userUpdateService.updateInternalAccessOnly(user, request);
-
-        verify(userExpandoHelper).set("isInternalAccess", true, user);
+        verify(userGroupHelper).processInternalAccessOnly(user);
     }
 
     @Test
