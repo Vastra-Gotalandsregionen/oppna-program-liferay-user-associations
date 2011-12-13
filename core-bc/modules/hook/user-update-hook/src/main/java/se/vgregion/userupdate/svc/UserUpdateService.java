@@ -305,27 +305,6 @@ public class UserUpdateService {
         }
     }
 
-    /**
-     * @param user
-     *            the Liferay user to update
-     */
-    public void updateVgrLabeledURI(User user, UserLdapAttributes userLdapAttributes) {
-        String[] vgrLabeledURI = userLdapAttributes.getVgrLabeledURI();
-        if (vgrLabeledURI == null || vgrLabeledURI.length == 0) {
-            // default value
-            vgrLabeledURI = new String[] { "http://intra.vgregion.se/" };
-        }
-
-        try {
-            userExpandoHelper.set("vgrLabeledURI", vgrLabeledURI, user);
-        } catch (Exception e) {
-            String msg = String.format("Failed to update vgrLabeledURI %s for [%s]",
-                    Arrays.toString(vgrLabeledURI), user.getScreenName());
-            log(msg, e);
-        }
-
-    }
-
     public void updateIsTandvard(User user, UserLdapAttributes userLdapAttributes) {
         boolean isTandvard = lookupIsTandvard(userLdapAttributes);
         try {
@@ -359,7 +338,39 @@ public class UserUpdateService {
         return tandvard;
     }
 
+    /**
+     * @param user
+     *            the Liferay user to update
+     */
+    public void updateVgrLabeledURI(User user, List<UnitLdapAttributes> userOrganizations) {
+        List<String> uriList = new ArrayList<String>();
+        if (userOrganizations == null) return;
+
+        if (userOrganizations.size() <= 0) {
+            uriList.add("http://intra.vgregion.se/");
+        }
+
+        for (UnitLdapAttributes unit: userOrganizations) {
+            String vgrLabeledURI = unit.getVgrLabeledURI();
+            if (StringUtils.isBlank(vgrLabeledURI)) {
+                vgrLabeledURI = unit.getLabeledURI();
+            }
+            if (StringUtils.isNotBlank(vgrLabeledURI)) {
+                uriList.add(vgrLabeledURI);
+            }
+        }
+
+        try {
+            userExpandoHelper.set("vgrLabeledURI", uriList.toArray(new String[] {}), user);
+        } catch (Exception e) {
+            String msg = String.format("Failed to update vgrLabeledURI %s for [%s]",
+                    uriList.toString(), user.getScreenName());
+            log(msg, e);
+        }
+    }
+
     public void updateIsPrimarvard(User user, List<UnitLdapAttributes> userOrganizations) {
+        if (userOrganizations == null) return;
         boolean isPrimarvard = lookupIsPrimarvard(userOrganizations);
 
         try {

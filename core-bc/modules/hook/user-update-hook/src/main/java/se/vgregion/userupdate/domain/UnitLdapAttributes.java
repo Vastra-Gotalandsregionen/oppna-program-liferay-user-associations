@@ -9,8 +9,10 @@ import javax.naming.Name;
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UnitLdapAttributes {
-    public Name dn = null;
-    public String vgrVardVal;
+    private Name dn = null;
+    private String vgrVardVal;
+    private String labeledURI;
+    private String vgrLabeledURI;
 
     public Name getDn() {
         return dn;
@@ -26,5 +28,21 @@ public class UnitLdapAttributes {
 
     public void setVgrVardVal(String vgrVardVal) {
         this.vgrVardVal = vgrVardVal;
+    }
+
+    public String getLabeledURI() {
+        return labeledURI;
+    }
+
+    public void setLabeledURI(String labeledURI) {
+        this.labeledURI = labeledURI;
+    }
+
+    public String getVgrLabeledURI() {
+        return vgrLabeledURI;
+    }
+
+    public void setVgrLabeledURI(String vgrLabeledURI) {
+        this.vgrLabeledURI = vgrLabeledURI;
     }
 }

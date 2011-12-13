@@ -18,6 +18,8 @@ public class UnitMapper implements ParameterizedContextMapper<UnitLdapAttributes
         UnitLdapAttributes unit = new UnitLdapAttributes();
         unit.setDn(adapter.getDn());
         unit.setVgrVardVal(adapter.getStringAttribute("vgrVardval"));
+        unit.setVgrLabeledURI(adapter.getStringAttribute("vgrLabeledURI"));
+        unit.setLabeledURI(adapter.getStringAttribute("labeledURI"));
 
         return unit;
     }
