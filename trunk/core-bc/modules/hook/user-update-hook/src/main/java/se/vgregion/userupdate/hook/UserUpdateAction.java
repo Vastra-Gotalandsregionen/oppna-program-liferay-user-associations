@@ -1,28 +1,25 @@
 package se.vgregion.userupdate.hook;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.liferay.portal.kernel.events.Action;
+import com.liferay.portal.kernel.events.ActionException;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.UserLocalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 import se.vgregion.userupdate.ldap.UserLdapDao;
 import se.vgregion.userupdate.svc.UserUpdateService;
 
-import com.liferay.portal.kernel.events.Action;
-import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.UserLocalService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA. Created: 2011-11-22 23:37
- * 
+ *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UserUpdateAction extends Action {
@@ -62,11 +59,11 @@ public class UserUpdateAction extends Action {
             userUpdateService.updatePrescriptionCode(user, userLdapAttributes);
             userUpdateService.updateIsDominoUser(user, userLdapAttributes);
             userUpdateService.updateVgrAdmin(user, userLdapAttributes);
-            userUpdateService.updateVgrLabeledURI(user, userLdapAttributes);
             userUpdateService.updateIsTandvard(user, userLdapAttributes);
             userUpdateService.updateOrganization(user, userLdapAttributes);
 
-            List<UnitLdapAttributes> unitLdapAttributesList = userLdapDao.resolve(userLdapAttributes);
+            List<UnitLdapAttributes> unitLdapAttributesList = lookupUserOrganizations(userLdapAttributes);
+            userUpdateService.updateVgrLabeledURI(user, unitLdapAttributesList);
             userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
         } catch (Exception e) {
             log(e.getMessage(), e);
@@ -74,6 +71,18 @@ public class UserUpdateAction extends Action {
             // internal access only check - has to be done last
             userUpdateService.updateInternalAccessOnly(user, request);
         }
+    }
+
+    private List<UnitLdapAttributes> lookupUserOrganizations(UserLdapAttributes userLdapAttributes) {
+        List<UnitLdapAttributes> unitLdapAttributesList = null;
+        try {
+            unitLdapAttributesList = userLdapDao.resolve(userLdapAttributes);
+        } catch (Exception ex) {
+            String msg = String.format("Failed to lookup user organizations for [%s]",
+                    userLdapAttributes.getUid());
+            log(msg, ex);
+        }
+        return unitLdapAttributesList;
     }
 
     private UserLdapAttributes lookupInLdap(String uid) {
