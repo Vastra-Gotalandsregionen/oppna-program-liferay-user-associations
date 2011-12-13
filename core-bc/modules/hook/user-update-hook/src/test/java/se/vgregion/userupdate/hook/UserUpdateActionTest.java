@@ -83,10 +83,10 @@ public class UserUpdateActionTest {
         verify(userUpdateService).updatePrescriptionCode(user, attr);
         verify(userUpdateService).updateIsDominoUser(user, attr);
         verify(userUpdateService).updateVgrAdmin(user, attr);
-        verify(userUpdateService).updateVgrLabeledURI(user, attr);
         verify(userUpdateService).updateIsTandvard(user, attr);
         verify(userUpdateService).updateOrganization(user, attr);
         // Organization
+        verify(userUpdateService).updateVgrLabeledURI(user, uAttr);
         verify(userUpdateService).updateIsPrimarvard(user, uAttr);
         // Request
         verify(userUpdateService).updateInternalAccessOnly(user, request);

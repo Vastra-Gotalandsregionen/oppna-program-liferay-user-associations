@@ -469,9 +469,7 @@ public class UserUpdateService {
     }
 
     public void updateInternalAccessOnly(User user, HttpServletRequest request) {
-        List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));
-        boolean internalAccess = internalGateHosts.contains(request.getRemoteHost());
-
+        boolean internalAccess = internalAccessRule(request.getRemoteHost());
         try {
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
 
@@ -481,6 +479,33 @@ public class UserUpdateService {
                     user.getScreenName());
             log(msg, e);
         }
+    }
+
+    private boolean internalAccessRule(String remoteHost) {
+        List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));
+        String delim = "\\.";
+        String[] remote = remoteHost.split(delim);
+
+        if (remote.length == 0) return false;
+
+        for (String gateHost : internalGateHosts) {
+            String[] gate = gateHost.split(delim);
+
+            if (remote.length != gate.length) continue;
+
+            boolean isMatch = true;
+            for (int i = 0; i < gate.length; i++) {
+                if (gate[i].equals("*")) continue;
+
+                if (!gate[i].equals(remote[i])) {
+                    isMatch = false;
+                    continue;
+                }
+            }
+            if (isMatch) return true;
+        }
+
+        return false;
     }
 
     private void log(String msg, Throwable ex) {

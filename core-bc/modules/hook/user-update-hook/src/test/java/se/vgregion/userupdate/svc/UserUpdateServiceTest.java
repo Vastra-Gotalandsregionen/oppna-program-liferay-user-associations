@@ -67,7 +67,7 @@ public class UserUpdateServiceTest {
         ReflectionTestUtils.setField(userUpdateService, "userExpandoHelper", userExpandoHelper);
         ReflectionTestUtils.setField(userUpdateService, "userGroupHelper", userGroupHelper);
         ReflectionTestUtils.setField(userUpdateService, "organizationHelper", organizationHelper);
-        ReflectionTestUtils.setField(userUpdateService, "internalAccessGateHosts", "1.1.1.1,2.2.2.2");
+        ReflectionTestUtils.setField(userUpdateService, "internalAccessGateHosts", "1.1.1.1,2.2.2.2,3.3.3.*");
     }
 
     @Test
@@ -592,46 +592,6 @@ public class UserUpdateServiceTest {
     }
 
     @Test
-    public void testUpdateVgrLabeledURI() throws Exception {
-        UserLdapAttributes attr = new UserLdapAttributes();
-        attr.setType(UserLdapAttributes.Type.PERSONAL);
-        String[] vgrLabeledURI = {"A", "B"};
-        attr.setVgrLabeledURI(vgrLabeledURI);
-
-        userUpdateService.updateVgrLabeledURI(user, attr);
-
-        verify(userExpandoHelper).set(eq("vgrLabeledURI"), eq(vgrLabeledURI), eq(user));
-    }
-
-    @Test
-    public void testUpdateVgrLabeledURI_guardEmpty() throws Exception {
-        UserLdapAttributes attr = new UserLdapAttributes();
-        attr.setType(UserLdapAttributes.Type.PERSONAL);
-
-        userUpdateService.updateVgrLabeledURI(user, attr);
-
-        verify(userExpandoHelper).set(eq("vgrLabeledURI"), eq(new String[]{"http://intra.vgregion.se/"}), eq(user));
-    }
-
-    @Test
-    public void testUpdateVgrLabeledURI_updateFailed() throws Exception {
-        final StringWriter writer = setupLogger(UserUpdateService.class, Level.WARN);
-
-        UserLdapAttributes attr = new UserLdapAttributes();
-        attr.setType(UserLdapAttributes.Type.PERSONAL);
-        String[] vgrLabeledURI = {"A", "B"};
-        attr.setVgrLabeledURI(vgrLabeledURI);
-
-        doThrow(new RuntimeException()).when(userExpandoHelper).set(anyString(), anyString(), eq(user));
-        when(user.getScreenName()).thenReturn("apa");
-
-        userUpdateService.updateVgrLabeledURI(user, attr);
-
-        String[] logMessages = writer.toString().split(EOL);
-        assertEquals("WARN - Failed to update vgrLabeledURI [A, B] for [apa]", logMessages[0]);
-    }
-
-    @Test
     public void testUpdateIsTandvard() throws Exception {
         UserLdapAttributes attr = new UserLdapAttributes();
         attr.setType(UserLdapAttributes.Type.PERSONAL);
@@ -695,6 +655,49 @@ public class UserUpdateServiceTest {
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Failed to update isTandvard [false] for [apa]", logMessages[0]);
+    }
+
+    @Test
+    public void testUpdateVgrLabeledURI() throws Exception {
+        UnitLdapAttributes attr1 = new UnitLdapAttributes();
+        attr1.setVgrLabeledURI("A");
+        UnitLdapAttributes attr2 = new UnitLdapAttributes();
+        attr1.setLabeledURI("B");
+
+        userUpdateService.updateVgrLabeledURI(user, Arrays.asList(attr1, attr2));
+
+        verify(userExpandoHelper).set(eq("vgrLabeledURI"), any(String[].class), eq(user));
+    }
+
+    @Test
+    public void testUpdateVgrLabeledURI_guardEmpty() throws Exception {
+        userUpdateService.updateVgrLabeledURI(user, Collections.<UnitLdapAttributes>emptyList());
+
+        verify(userExpandoHelper).set(eq("vgrLabeledURI"), eq(new String[]{"http://intra.vgregion.se/"}), eq(user));
+    }
+
+    @Test
+    public void testUpdateVgrLabeledURI_guardEmpty2() throws Exception {
+        userUpdateService.updateVgrLabeledURI(user, null);
+
+        verify(userExpandoHelper, never()).set(eq("vgrLabeledURI"), eq(new String[]{"http://intra.vgregion.se/"}),
+                eq(user));
+    }
+
+    @Test
+    public void testUpdateVgrLabeledURI_updateFailed() throws Exception {
+        final StringWriter writer = setupLogger(UserUpdateService.class, Level.WARN);
+
+        UnitLdapAttributes attr = new UnitLdapAttributes();
+        attr.setVgrLabeledURI("A");
+
+        doThrow(new RuntimeException()).when(userExpandoHelper).set(anyString(), anyString(), eq(user));
+        when(user.getScreenName()).thenReturn("apa");
+
+        userUpdateService.updateVgrLabeledURI(user, Arrays.asList(attr));
+
+        String[] logMessages = writer.toString().split(EOL);
+        assertEquals("WARN - Failed to update vgrLabeledURI [A] for [apa]", logMessages[0]);
     }
 
     @Test
@@ -849,7 +852,7 @@ public class UserUpdateServiceTest {
     public void testUpdateInternalAccessOnly_notInternalAccess() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        when(request.getRemoteHost()).thenReturn("3.3.3.3");
+        when(request.getRemoteHost()).thenReturn("3.3.4.3");
         UserGroup ug1 = mock(UserGroup.class);
         when(ug1.getName()).thenReturn("ug1_internal_only");
         UserGroup ug2 = mock(UserGroup.class);
