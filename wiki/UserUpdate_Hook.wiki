@@ -14,7 +14,6 @@ When the user login a number of attributes and role associations has to be updat
 
 When a user sing in to the portal the User-association-hook hooks in and retrieves the information from the LDPA catalog  and sets this new information for the user. It Also adds and removes memberships in user-groups. 
 
-The portal in this case uses user-groups to delegate permissions. The user-groups have user-group roles assigned to them and the roles have the permissions. Depending on if a user accesses the portal from the internal or external network the user shall have different permissions. 
 
 
 http://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/liferay-user-asociassion.png
@@ -26,6 +25,8 @@ http://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/li
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/UserUpdate-Hook-seq.png
 
 === Internal access===
+The portal in this case uses user-groups to delegate permissions. The user-groups have user-group roles assigned to them and the roles have the permissions. Depending on if a user accesses the portal from the internal or external network the user shall have different permissions. 
+
 Their is a collection of groups the have ”_internal_only” sufix on their name. This groups do not have any roles assigned to them. They are only used to tell that the user shall be added to the original group, the group named without ”_internal_only”. If a user is accessing the portal from the internal network and have a membership in a ”_internal_only”-group.
 
 For example if a user is a member of the BFR_internal_only group and sing in from the internal network. UserUpdate-Hook will add the user to the BFR group. Now when the user is a member of BFR he have inherited the roll that gives the permission to the BFR application.  
