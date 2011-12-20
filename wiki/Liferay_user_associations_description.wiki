@@ -1,9 +1,9 @@
 #summary One-sentence summary of this page.
 
-=Community-Hook=
+=Community-Hook[http://code.google.com/p/oppna-program-liferay-user-associations/wiki/UserUpdate_Hook_description]=
 
 By using matching rules users can initially be associated to communities, organizations and user-groups allowing custom login landing page can be configured.
 
-=UserUpdate-Hook=
+=UserUpdate-Hook[http://code.google.com/p/oppna-program-liferay-user-associations/wiki/UserUpdate_Hook_description]=
 
 When the user login a number of attributes and role associations has to be updated. Information are fetched mainly from the LDAP catalog, user data and organization data, but also from access gate to the system. This information update is done as an integral part of the login process and will be left untouched on logout to allow an administrator to review if problems arise. 
