@@ -1,5 +1,4 @@
 
-
 /oppna-program-liferay-user-associations/wiki/images/Internal-only-access.graffle#summary One-sentence summary of this page.
 
 = Introduction =
@@ -18,4 +17,7 @@ Add your content here.  Format your content with:
 http://gothia-forum-actors.googlecode.com/svn/wiki/images/hits.png
 
 
-http://  /oppna-program-liferay-user-associationsgooglecode.com/svn/wiki/images/Internal-only-access.png
+svn/wiki/images/Internal-only-access.png
+
+
+http://oppna-program-liferay-user-associationsgooglecode.com/svn/wiki/images/Internal-only-access.png
