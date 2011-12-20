@@ -1,13 +1,9 @@
 #summary One-sentence summary of this page.
 
-= Introduction =
+=Community-Hook=
 
-Add your content here.
+By using matching rules users can initially be associated to communities, organizations and user-groups allowing custom login landing page can be configured.
 
+=UserUpdate?-Hook=
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+When the user login a number of attributes and role associations has to be updated. Information are fetched mainly from the LDAP catalog, user data and organization data, but also from access gate to the system. This information update is done as an integral part of the login process and will be left untouched on logout to allow an administrator to review if problems arise. 
