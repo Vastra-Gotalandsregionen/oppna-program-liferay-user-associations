@@ -1,6 +1,9 @@
-/oppna-program-liferay-user-associations/wiki/images/Internal-only-access.graffle#summary One-sentence summary of this page.
+= Content =
+<wiki:toc/> 
 
-= Introduction =
+
+
+= User Associations Hook =
 
 When the user login a number of attributes and role associations has to be updated. Information are fetched mainly from the LDAP catalog, user data and organization data, but also from access gate to the system. This information update is done as an integral part of the login process and will be left untouched on logout to allow an administrator to review if problems arise. 
 
@@ -9,12 +12,8 @@ When the user login a number of attributes and role associations has to be updat
 
 http://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/liferay-user-asociassion.png
 
-= Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+
 
 
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/UserUpdate-Hook-seq.png
@@ -22,5 +21,3 @@ https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/U
 
 
 http://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/Internal-only-access.png
-
-
