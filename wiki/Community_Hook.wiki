@@ -7,10 +7,7 @@ By using matching rules users can initially be associated to communities, organi
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Their is a filter that uses a regex to determine to which page the user shall be directed to. 
 
 
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/community-hook1.png
