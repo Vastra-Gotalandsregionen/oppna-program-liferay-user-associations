@@ -22,7 +22,7 @@ http://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/li
 
 === Sequence diagram ===
 
-This sequence diagram describes what happen when a user sing in using the sign in portlet in the portal. The hook hooks in an ask the LDAP for information using a service in Commons project. Then it uses another service in the Common project to set the values to  Liferay. When this is done an if everything succeeded the user will be signed in. 
+This sequence diagram describes what happen when a user sing in using the sign in portlet in the portal. The hook intercept the login process and retrieves information from LDAP using a service in Commons project. Then it uses another service in Common to set the values to Liferay. When this is done an if everything succeeded the user will be signed in. 
 
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/UserUpdate-Hook-seq.png
 
