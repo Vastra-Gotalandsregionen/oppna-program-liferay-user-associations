@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Add your content here.
+By using matching rules users can initially be associated to communities, organizations and user-groups allowing custom login landing page can be configured. 
 
 
 = Details =
