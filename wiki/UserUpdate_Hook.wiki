@@ -12,7 +12,7 @@ When the user login a number of attributes and role associations has to be updat
 ==Description==
 
 
-When a user sing in to the portal the User-association-hook hooks in and retrieves the information from the LDPA catalog  and sets this new information for the user. It Also adds and removes memberships in user-groups. 
+When a user sign in to the portal the User-association-hook intercept and retrieves the information from the LDPA catalog  and sets this new information for the user. It Also adds and removes memberships in user-groups. 
 
 
 
