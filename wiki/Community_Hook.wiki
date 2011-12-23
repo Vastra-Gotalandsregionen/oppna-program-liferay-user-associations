@@ -11,8 +11,7 @@ https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/c
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/Community-hook.png
 
 
-#The Community hooks starts processing when a user logging in to the portal. 
-
-#The hook starts processing all of the matchers in the matchers list. The matchers uses a regex as a flter to determinate if the matcher is valid for the user. If it is, the matcher analyses if the user is a member of all the groups that the matcher have in its list of groups. If a user not is a member, the user will be added to that group.
-#When all the matchers are processed. The hook determinate the landing page by the groups that the user is a member of 
-#Ends with setting the landing pages so the user later can be redirected there.  
+  #The Community hooks starts processing when a user logging in to the portal. 
+  #The hook starts processing all of the matchers in the matchers list. The matchers uses a regex as a flter to determinate if the matcher is valid for the user. If it is, the matcher analyses if the user is a member of all the groups that the matcher have in its list of groups. If a user not is a member, the user will be added to that group.
+  #When all the matchers are processed. The hook determinate the landing page by the groups that the user is a member of 
+  #Ends with setting the landing pages so the user later can be redirected there.  
