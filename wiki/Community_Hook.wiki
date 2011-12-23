@@ -11,3 +11,8 @@ Their is a filter that uses a regex to determine to which page the user shall be
 
 
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/community-hook1.png
+
+
+
+
+https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/Community-hook.png
