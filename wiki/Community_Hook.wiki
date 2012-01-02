@@ -2,16 +2,16 @@
 
 = Introduction =
 
-By using matching rules users can initially be associated to communities, organizations and user-groups allowing custom login landing page can be configured. 
+By using matching rules, users can be associated to communities, organizations and user-groups, allowing a custom login landing page to be configured. 
 
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/community-hook1.png
 
 
 = Details =
+
+  # The Community hooks start processing when a user log into the portal. 
+  # The hook works through all of the matchers one at a time. A matcher use a regexp as a filter to determinate if the matcher is valid for the user. On a match, the hook analyses if the user is a member of all the groups the matcher have in it's list of groups and if not is a member, the user will be added to that group.
+  # When all matchers has been processed, the hook determine the correct landing page by analyzing the groups the user is member of. 
+  # And ends with setting the landing pages so the user later can be redirected there.  
+
 https://oppna-program-liferay-user-associations.googlecode.com/svn/wiki/images/Community-hook.png
-
-
-  # The Community hooks starts processing when a user logging in to the portal. 
-  # The hook starts processing all of the matchers in the matchers list. The matchers uses a regex as a flter to determinate if the matcher is valid for the user. If it is, the matcher analyses if the user is a member of all the groups that the matcher have in its list of groups. If a user not is a member, the user will be added to that group.
-  # When all the matchers are processed. The hook determinate the landing page by the groups that the user is a member of 
-  # Ends with setting the landing pages so the user later can be redirected there.  
