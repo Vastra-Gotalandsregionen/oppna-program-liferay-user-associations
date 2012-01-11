@@ -42,10 +42,6 @@ Generation time : 2011-06-14 13:13:30 CEST
       <artifactId>portlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.portal</groupId>
-      <artifactId>portlet-container</artifactId>
-    </dependency>
-    <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
     </dependency>
@@ -119,11 +115,6 @@ Generation time : 2011-06-14 13:13:30 CEST
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
       <version>2.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>se.vgregion.test-utils</groupId>
-      <artifactId>test-utils-bc-core-composite-svc</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
