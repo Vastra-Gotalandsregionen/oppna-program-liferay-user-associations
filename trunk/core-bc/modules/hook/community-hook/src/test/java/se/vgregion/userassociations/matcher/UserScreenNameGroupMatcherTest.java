@@ -18,22 +18,15 @@
  */
 package se.vgregion.userassociations.matcher;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.UserLocalService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-import se.vgregion.liferay.application.userproperty.ContactStub;
-import se.vgregion.liferay.application.userproperty.UserStub;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**

@@ -120,12 +120,6 @@
       <version>6.0.29</version>
       <scope>provided</scope>
     </dependency>
-
-
-    <dependency>
-      <groupId>se.vgregion.test-utils</groupId>
-      <artifactId>test-utils-bc-core-composite-svc</artifactId>
-    </dependency>
   </dependencies>
 
 </project>
