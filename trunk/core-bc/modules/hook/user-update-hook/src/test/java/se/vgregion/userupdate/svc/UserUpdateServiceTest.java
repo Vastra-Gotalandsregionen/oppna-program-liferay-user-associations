@@ -560,7 +560,7 @@ public class UserUpdateServiceTest {
         userUpdateService.updateVgrAdmin(user, attr);
 
         verify(userExpandoHelper).set(eq("vgrAdminType"), eq("A"), eq(user));
-        verify(userGroupHelper).addUser(eq("VgrAdminUsers"), eq(user));
+        verify(userGroupHelper).addUser(eq("VgrKivAdminUsers"), eq(user));
     }
 
     @Test
@@ -571,7 +571,7 @@ public class UserUpdateServiceTest {
         userUpdateService.updateVgrAdmin(user, attr);
 
         verify(userExpandoHelper).set(eq("vgrAdminType"), eq(""), eq(user));
-        verify(userGroupHelper).removeUser(eq("VgrAdminUsers"), eq(user));
+        verify(userGroupHelper).removeUser(eq("VgrKivAdminUsers"), eq(user));
     }
 
     @Test
