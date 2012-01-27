@@ -235,10 +235,11 @@ public class UserUpdateService {
         try {
             userExpandoHelper.set("hsaPrescriptionCode", prescriptionCode, user);
 
+            String groupName = resolveGroupName(user, "PliUsers");
             if (StringUtils.isBlank(prescriptionCode)) {
-                userGroupHelper.removeUser("PliUsers", user);
+                userGroupHelper.removeUser(groupName, user);
             } else {
-                userGroupHelper.addUser("PliUsers", user);
+                userGroupHelper.addUser(groupName, user);
             }
         } catch (Exception e) {
             String msg = String.format("Failed to set HsaPersonPerscriptionCode [%s] for [%s]", prescriptionCode,
@@ -263,12 +264,14 @@ public class UserUpdateService {
         try {
             userExpandoHelper.set("isDominoUser", isDominoUser, user);
 
+            String dominoGroupName = resolveGroupName(user, "DominoUsers");
+            String notDominoGroupName = resolveGroupName(user, "NotDominoUsers");
             if (isDominoUser) {
-                userGroupHelper.addUser("DominoUsers", user);
-                userGroupHelper.removeUser("NotDominoUsers", user);
+                userGroupHelper.addUser(dominoGroupName, user);
+                userGroupHelper.removeUser(notDominoGroupName, user);
             } else {
-                userGroupHelper.addUser("NotDominoUsers", user);
-                userGroupHelper.removeUser("DominoUsers", user);
+                userGroupHelper.addUser(notDominoGroupName, user);
+                userGroupHelper.removeUser(dominoGroupName, user);
             }
         } catch (Exception e) {
             String msg = String.format("Failed to update domino user state [%s] for [%s]", isDominoUser,
@@ -293,10 +296,11 @@ public class UserUpdateService {
         try {
             userExpandoHelper.set("vgrAdminType", vgrAdmin, user);
 
+            String groupName = resolveGroupName(user, "VgrKivAdminUsers");
             if (StringUtils.isNotBlank(vgrAdmin)) {
-                userGroupHelper.addUser("VgrAdminUsers", user);
+                userGroupHelper.addUser(groupName, user);
             } else {
-                userGroupHelper.removeUser("VgrAdminUsers", user);
+                userGroupHelper.removeUser(groupName, user);
             }
         } catch (Exception e) {
             String msg = String.format("Failed to update vgrAdminType [%s] for [%s]", vgrAdmin,
@@ -305,14 +309,24 @@ public class UserUpdateService {
         }
     }
 
+    private String resolveGroupName(User user, String groupName) {
+        userGroupHelper.createIfNeeded(groupName, user.getCompanyId());
+        if (userGroupHelper.findByName(groupName + POSTFIX_INTERNAL_ONLY, user.getCompanyId()) != null) {
+            groupName += POSTFIX_INTERNAL_ONLY;
+        }
+        return groupName;
+    }
+
     public void updateIsTandvard(User user, UserLdapAttributes userLdapAttributes) {
         boolean isTandvard = lookupIsTandvard(userLdapAttributes);
         try {
             userExpandoHelper.set("isTandvard", isTandvard, user);
+
+            String groupName = resolveGroupName(user, "TandvardUsers");
             if (isTandvard) {
-                userGroupHelper.addUser("TandvardUsers", user);
+                userGroupHelper.addUser(groupName, user);
             } else {
-                userGroupHelper.removeUser("TandvardUsers", user);
+                userGroupHelper.removeUser(groupName, user);
             }
         } catch (Exception e) {
             String msg = String.format("Failed to update isTandvard [%s] for [%s]", isTandvard,
@@ -375,10 +389,12 @@ public class UserUpdateService {
 
         try {
             userExpandoHelper.set("isPrimarvard", isPrimarvard, user);
+
+            String groupName = resolveGroupName(user, "VGPrimarvardUsers");
             if (isPrimarvard) {
-                userGroupHelper.addUser("VGPrimarvardUsers", user);
+                userGroupHelper.addUser(groupName, user);
             } else {
-                userGroupHelper.removeUser("VGPrimarvardUsers", user);
+                userGroupHelper.removeUser(groupName, user);
             }
         } catch (Exception e) {
             String msg = String.format("Failed to update isPrimarvard [%s] for [%s]", isPrimarvard,
