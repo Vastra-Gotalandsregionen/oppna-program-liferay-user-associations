@@ -1,2 +1,0 @@
-BIND_DN=uid=BindingUser,ou=OrganizationalUnit,O=Organization
-BIND_PW=Password
