@@ -53,6 +53,9 @@ public class UserUpdateService {
     @Value("${internal.access.gate.hosts}")
     private String internalAccessGateHosts;
 
+    @Value("${external.access.x-forwarded-for:192.71.67.45}")
+    private String externalAccessXForwardedFor;
+
     @Autowired
     private OrganizationHelper organizationHelper;
 
@@ -500,7 +503,7 @@ public class UserUpdateService {
 
     private boolean internalAccessRule(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
-        return (ip != null && !"192.71.67.45".equalsIgnoreCase(ip));
+        return (ip != null && !externalAccessXForwardedFor.equalsIgnoreCase(ip));
     }
 
     private boolean internalAccessRuleOld(String remoteHost) {
