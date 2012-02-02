@@ -485,7 +485,8 @@ public class UserUpdateService {
     }
 
     public void updateInternalAccessOnly(User user, HttpServletRequest request) {
-        boolean internalAccess = internalAccessRule(request.getRemoteHost());
+        boolean internalAccess = internalAccessRule(request);
+//        boolean internalAccess = internalAccessRule(request.getRemoteHost());
         try {
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
 
@@ -497,7 +498,12 @@ public class UserUpdateService {
         }
     }
 
-    private boolean internalAccessRule(String remoteHost) {
+    private boolean internalAccessRule(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        return (ip != null && !"192.71.67.45".equalsIgnoreCase(ip));
+    }
+
+    private boolean internalAccessRuleOld(String remoteHost) {
         List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));
         String delim = "\\.";
         String[] remote = remoteHost.split(delim);
