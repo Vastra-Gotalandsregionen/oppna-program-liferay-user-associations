@@ -64,6 +64,7 @@
     <value>/</value>
     <value>/guest/home</value>
     <value>web/guest</value>
+    <value>/guest</value>
   </util:list>
 
 
