@@ -11,13 +11,13 @@ Generation time : 2011-06-14 13:13:30 CEST
   <parent>
     <groupId>se.vgregion.liferay-user-associations</groupId>
     <artifactId>liferay-user-associations-system</artifactId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>se.vgregion.liferay-user-associations</groupId>
   <artifactId>liferay-user-associations-core-bc</artifactId>
   <packaging>pom</packaging>
-  <version>1.5</version>
+  <version>1.6-SNAPSHOT</version>
   <name>${project.artifactId}</name>
 
   <modules>
