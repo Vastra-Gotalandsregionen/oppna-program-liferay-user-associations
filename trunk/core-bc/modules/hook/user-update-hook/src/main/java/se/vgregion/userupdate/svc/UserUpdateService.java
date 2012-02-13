@@ -25,13 +25,12 @@ import se.vgregion.userupdate.domain.UserLdapAttributes;
 import com.liferay.portal.model.Contact;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
 
 /**
  * Created by IntelliJ IDEA. Created: 2011-11-28 15:16
- * 
+ *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UserUpdateService {
@@ -50,21 +49,18 @@ public class UserUpdateService {
     @Autowired
     private UserGroupHelper userGroupHelper;
 
-    @Value("${internal.access.gate.hosts}")
-    private String internalAccessGateHosts;
-
-    @Value("${external.access.x-forwarded-for:192.71.67.45}")
-    private String externalAccessXForwardedFor;
-
     @Autowired
     private OrganizationHelper organizationHelper;
+
+    @Value("${ip_for_external_access}")
+    private String ipForExternalAccess;
 
     private static final String POSTFIX_INTERNAL_ONLY = "_internal_only";
 
     /**
      * Updates the birthday of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP
      * catalog or person identity number is not set, birthday will be unmodified.
-     * 
+     *
      * @param user
      *            the Liferay user to update
      */
@@ -93,7 +89,7 @@ public class UserUpdateService {
     /**
      * Updates the gender of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP catalog
      * or person identity number is not set, gender will be unmodified.
-     * 
+     *
      * @param user
      *            the Liferay user to update
      */
@@ -226,7 +222,7 @@ public class UserUpdateService {
     /**
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
-     * 
+     *
      * @param user
      *            the Liferay user to update
      */
@@ -254,7 +250,7 @@ public class UserUpdateService {
     /**
      * Sets the Domino user flag on a Liferay user if the users has Domino access according to the LDAP catalog. If
      * no user is found in LDAP the Domino user flag is set to false.
-     * 
+     *
      * @param user
      *            the Liferay user to update
      */
@@ -286,7 +282,7 @@ public class UserUpdateService {
     /**
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
-     * 
+     *
      * @param user
      *            the Liferay user to update
      */
@@ -488,9 +484,10 @@ public class UserUpdateService {
     }
 
     public void updateInternalAccessOnly(User user, HttpServletRequest request) {
-        boolean internalAccess = internalAccessRule(request);
-//        boolean internalAccess = internalAccessRule(request.getRemoteHost());
+        boolean internalAccess = false;
         try {
+            internalAccess = internalAccessRule(request, user);
+
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
 
             userGroupHelper.processInternalAccessOnly(user);
@@ -498,39 +495,19 @@ public class UserUpdateService {
             String msg = String.format("Failed to process isInternalAccess [%s] for [%s]", internalAccess,
                     user.getScreenName());
             log(msg, e);
+            request.getSession().invalidate(); // Better to invalidate than risking anyone getting too much access
         }
     }
 
-    private boolean internalAccessRule(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        return (ip != null && !externalAccessXForwardedFor.equalsIgnoreCase(ip));
-    }
-
-    private boolean internalAccessRuleOld(String remoteHost) {
-        List<String> internalGateHosts = Arrays.asList(internalAccessGateHosts.split(","));
-        String delim = "\\.";
-        String[] remote = remoteHost.split(delim);
-
-        if (remote.length == 0) return false;
-
-        for (String gateHost : internalGateHosts) {
-            String[] gate = gateHost.split(delim);
-
-            if (remote.length != gate.length) continue;
-
-            boolean isMatch = true;
-            for (int i = 0; i < gate.length; i++) {
-                if (gate[i].equals("*")) continue;
-
-                if (!gate[i].equals(remote[i])) {
-                    isMatch = false;
-                    continue;
-                }
-            }
-            if (isMatch) return true;
+    private boolean internalAccessRule(HttpServletRequest request, User user) {
+        String header = request.getHeader("x-forwarded-for");
+        if (header != null && header.contains(ipForExternalAccess)) { //there may be a comma-separated list of IPs
+            LOGGER.info("User " + user.getScreenName() + " logged in externally.");
+            return false;
+        } else {
+            LOGGER.info("User " + user.getScreenName() + " logged in internally.");
+            return true;
         }
-
-        return false;
     }
 
     private void log(String msg, Throwable ex) {
