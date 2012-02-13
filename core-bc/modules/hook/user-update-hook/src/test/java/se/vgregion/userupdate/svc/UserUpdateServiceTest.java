@@ -22,6 +22,7 @@ import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +59,8 @@ public class UserUpdateServiceTest {
     @Mock
     User user;
 
+    private final String ipForExternalAccess = "111.222.222.111";
+
     @Before
     public void setUp() throws Exception {
         userUpdateService = new UserUpdateService();
@@ -67,7 +70,7 @@ public class UserUpdateServiceTest {
         ReflectionTestUtils.setField(userUpdateService, "userExpandoHelper", userExpandoHelper);
         ReflectionTestUtils.setField(userUpdateService, "userGroupHelper", userGroupHelper);
         ReflectionTestUtils.setField(userUpdateService, "organizationHelper", organizationHelper);
-        ReflectionTestUtils.setField(userUpdateService, "internalAccessGateHosts", "1.1.1.1,2.2.2.2,3.3.3.*");
+        ReflectionTestUtils.setField(userUpdateService, "ipForExternalAccess", ipForExternalAccess);
     }
 
     @Test
@@ -852,7 +855,8 @@ public class UserUpdateServiceTest {
     public void testUpdateInternalAccessOnly_notInternalAccess() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        when(request.getRemoteHost()).thenReturn("3.3.4.3");
+        when(request.getHeader("x-forwarded-for")).thenReturn(ipForExternalAccess);
+
         UserGroup ug1 = mock(UserGroup.class);
         when(ug1.getName()).thenReturn("ug1_internal_only");
         UserGroup ug2 = mock(UserGroup.class);
@@ -871,7 +875,9 @@ public class UserUpdateServiceTest {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        when(request.getRemoteHost()).thenReturn("2.2.2.2");
+        when(request.getHeader("x-forwarded-for")).thenReturn("2.2.2.2");
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
 
         doThrow(new RuntimeException()).when(userExpandoHelper).set(anyString(), eq(true),eq(user));
         when(user.getScreenName()).thenReturn("apa");
