@@ -11,6 +11,11 @@
 
   <import resource="classpath:ldap-configuration.xml"/>
 
+  <bean id="propertiesBean" class="se.vgregion.userupdate.domain.PropertiesBean" >
+    <property name="ipForExternalAccess" value="${ip_for_external_access}"></property>
+    <property name="externalUserRedirectUrl" value="${external_user_redirect_url}"></property>  
+  </bean>
+  
   <bean id="userUpdateService" class="se.vgregion.userupdate.svc.UserUpdateService" />
 
   <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl" />
