@@ -2,3 +2,4 @@ BIND_DN=uid=BindingUser,ou=OrganizationalUnit,O=Organization
 BIND_PW=Password
 
 ip_for_external_access=xxx.xxx.xxx.xxx
+external_user_redirect_url=http://portal.vgregion.se
