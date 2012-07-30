@@ -65,6 +65,7 @@
     <value>/guest/home</value>
     <value>web/guest</value>
     <value>/guest</value>
+    <value>/group/vgregion/pub-start</value>
   </util:list>
 
 
