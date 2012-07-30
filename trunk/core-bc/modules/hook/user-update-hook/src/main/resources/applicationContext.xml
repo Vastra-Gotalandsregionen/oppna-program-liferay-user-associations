@@ -7,29 +7,30 @@
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
   <context:annotation-config/>
-  <context:property-placeholder location="classpath:security.properties" ignore-unresolvable="true" />
+  <context:property-placeholder location="classpath:security.properties,classpath:application.properties,
+          classpath:ldap-configuration.properties" ignore-unresolvable="false"/>
 
   <import resource="classpath:ldap-configuration.xml"/>
 
-  <bean id="propertiesBean" class="se.vgregion.userupdate.domain.PropertiesBean" >
+  <bean id="propertiesBean" class="se.vgregion.userupdate.domain.PropertiesBean">
     <property name="ipForExternalAccess" value="${ip_for_external_access}"></property>
-    <property name="externalUserRedirectUrl" value="${external_user_redirect_url}"></property>  
+    <property name="externalUserRedirectUrl" value="${external_user_redirect_url}"></property>
   </bean>
-  
-  <bean id="userUpdateService" class="se.vgregion.userupdate.svc.UserUpdateService" />
 
-  <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl" />
+  <bean id="userUpdateService" class="se.vgregion.userupdate.svc.UserUpdateService"/>
 
-  <bean id="expandoUtil" class="se.vgregion.liferay.expando.ExpandoUtil" />
+  <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl"/>
 
-  <bean id="userGroupHelper" class="se.vgregion.liferay.usergroup.UserGroupHelperImpl" />
+  <bean id="expandoUtil" class="se.vgregion.liferay.expando.ExpandoUtil"/>
 
-  <bean id="liferayAutomation" class="se.vgregion.liferay.LiferayAutomation" />
+  <bean id="userGroupHelper" class="se.vgregion.liferay.usergroup.UserGroupHelperImpl"/>
 
-  <bean id="organizationHelper" class="se.vgregion.liferay.organization.OrganizationHelperImpl" />
+  <bean id="liferayAutomation" class="se.vgregion.liferay.LiferayAutomation"/>
+
+  <bean id="organizationHelper" class="se.vgregion.liferay.organization.OrganizationHelperImpl"/>
 
   <!-- Ldap utilities -->
-  <bean id="userLdapDao" class="se.vgregion.userupdate.ldap.UserLdapDao" />
+  <bean id="userLdapDao" class="se.vgregion.userupdate.ldap.UserLdapDao"/>
 
   <!-- Liferay utilities-->
   <bean id="userLocalService" class="com.liferay.portal.service.UserLocalServiceUtil"
@@ -39,17 +40,17 @@
   <bean id="expandoColumnLocalService" class="com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil"
         factory-method="getService"/>
   <bean id="expandoTableLocalService" class="com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
   <bean id="expandoValueLocalService" class="com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
   <bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
   <bean id="roleLocalService" class="com.liferay.portal.service.RoleLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
   <bean id="resourcePermissionLocalService" class="com.liferay.portal.service.ResourcePermissionLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
   <bean id="organizationLocalService" class="com.liferay.portal.service.OrganizationLocalServiceUtil"
-        factory-method="getService" />
+        factory-method="getService"/>
 
 </beans>
         

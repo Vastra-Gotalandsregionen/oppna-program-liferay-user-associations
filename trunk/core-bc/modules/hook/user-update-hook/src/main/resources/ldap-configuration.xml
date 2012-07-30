@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
       <list>
         <value>classpath:ldap-configuration.properties</value>
         <value>classpath:security.properties</value>
       </list>
     </property>
-  </bean>
+  </bean>-->
 
   <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
     <property name="url" value="${BIND_URL}" />
