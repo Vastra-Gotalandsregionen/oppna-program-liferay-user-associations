@@ -61,8 +61,7 @@ public class UserUpdateService {
      * Updates the birthday of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP
      * catalog or person identity number is not set, birthday will be unmodified.
      *
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updateBirthday(User user, UserLdapAttributes userLdapAttributes) {
         PersonNummer personNummer = userLdapAttributes.getPersonNummer();
@@ -90,8 +89,7 @@ public class UserUpdateService {
      * Updates the gender of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP catalog
      * or person identity number is not set, gender will be unmodified.
      *
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updateGender(User user, UserLdapAttributes userLdapAttributes) {
         PersonNummer personNummer = userLdapAttributes.getPersonNummer();
@@ -223,8 +221,7 @@ public class UserUpdateService {
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
      *
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updatePrescriptionCode(User user, UserLdapAttributes userLdapAttributes) {
         String prescriptionCode = userLdapAttributes.getHsaPersonPrescriptionCode();
@@ -251,8 +248,7 @@ public class UserUpdateService {
      * Sets the Domino user flag on a Liferay user if the users has Domino access according to the LDAP catalog. If
      * no user is found in LDAP the Domino user flag is set to false.
      *
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updateIsDominoUser(User user, UserLdapAttributes userLdapAttributes) {
         boolean isDominoUser = false;
@@ -283,8 +279,7 @@ public class UserUpdateService {
      * Updates the prescription code of a Liferay user with value from a LDAP catalog. If no user is found in LDAP
      * catalog prescription code will be cleared.
      *
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updateVgrAdmin(User user, UserLdapAttributes userLdapAttributes) {
         String vgrAdmin = userLdapAttributes.getVgrAdminType();
@@ -341,10 +336,13 @@ public class UserUpdateService {
         if (strukturGrupp != null) {
             List<String> strukturGrupps = Arrays.asList(strukturGrupp);
             List<String> tandvardNames = Arrays.asList("Tandvård", "Folktandvården Västra Götaland");
-            for (String name : tandvardNames) {
-                if (strukturGrupps.contains(name)) {
-                    tandvard = true;
-                    break;
+            outer:
+            for (String grupp : strukturGrupps) {
+                for (String name : tandvardNames) {
+                    if (grupp.toLowerCase().contains(name.toLowerCase())) {
+                        tandvard = true;
+                        break outer;
+                    }
                 }
             }
         }
@@ -352,8 +350,7 @@ public class UserUpdateService {
     }
 
     /**
-     * @param user
-     *            the Liferay user to update
+     * @param user the Liferay user to update
      */
     public void updateVgrLabeledURI(User user, List<UnitLdapAttributes> userOrganizations) {
         List<String> uriList = new ArrayList<String>();
@@ -363,7 +360,7 @@ public class UserUpdateService {
             uriList.add("http://intra.vgregion.se/");
         }
 
-        for (UnitLdapAttributes unit: userOrganizations) {
+        for (UnitLdapAttributes unit : userOrganizations) {
             String vgrLabeledURI = unit.getVgrLabeledURI();
             if (StringUtils.isBlank(vgrLabeledURI)) {
                 vgrLabeledURI = unit.getLabeledURI();
@@ -374,7 +371,7 @@ public class UserUpdateService {
         }
 
         try {
-            userExpandoHelper.set("vgrLabeledURI", uriList.toArray(new String[] {}), user);
+            userExpandoHelper.set("vgrLabeledURI", uriList.toArray(new String[]{}), user);
         } catch (Exception e) {
             String msg = String.format("Failed to update vgrLabeledURI %s for [%s]",
                     uriList.toString(), user.getScreenName());
@@ -501,13 +498,19 @@ public class UserUpdateService {
 
     private boolean internalAccessRule(HttpServletRequest request, User user) {
         String header = request.getHeader("x-forwarded-for");
-        if (header != null && header.contains(ipForExternalAccess)) { //there may be a comma-separated list of IPs
-            LOGGER.info("User " + user.getScreenName() + " logged in externally.");
-            return false;
-        } else {
-            LOGGER.info("User " + user.getScreenName() + " logged in internally.");
-            return true;
+        String[] ipsForExternalAccess = ipForExternalAccess.replaceAll(" ", "").split(",");
+        boolean internal = true;
+        if (header != null) {
+            // Iterate over the ip:s. We'll find a match if the user is located externally.
+            for (String ip : ipsForExternalAccess) {
+                if (header.contains(ip)) { // String.contains(...) since the header value may be a comma-separated list.
+                    LOGGER.info("User " + user.getScreenName() + " logged in externally.");
+                    return false;
+                }
+            }
         }
+        LOGGER.info("User " + user.getScreenName() + " logged in internally.");
+        return true;
     }
 
     private void log(String msg, Throwable ex) {

@@ -30,8 +30,7 @@ public class ExternalUserLogoutAction extends Action {
         if (externalAccessRule(request)) {
             LOGGER.info("Is external user, will send redirect");
             try {
-                PropertiesBean propertiesBean =
-                        (PropertiesBean) getApplicationContext().getBean("propertiesBean");
+                PropertiesBean propertiesBean = (PropertiesBean) getApplicationContext().getBean("propertiesBean");
                 response.sendRedirect(propertiesBean.getExternalUserRedirectUrl());
             } catch (IOException e) {
                 log(e.getMessage(), e);
@@ -43,13 +42,15 @@ public class ExternalUserLogoutAction extends Action {
     private boolean externalAccessRule(HttpServletRequest request) {
         String header = request.getHeader("x-forwarded-for");
         PropertiesBean propertiesBean = (PropertiesBean) getApplicationContext().getBean("propertiesBean");
-        if (header != null && header.contains(propertiesBean.getIpForExternalAccess())) { // there may be a
-                                                                                          // comma-separated list
-                                                                                          // of IPs
-            return true;
-        } else {
-            return false;
+        if (header != null) {
+            // Iterate over the ip:s. We'll find a match if the user is located externally.
+            for (String ip : propertiesBean.getIpsForExternalAccess()) {
+                if (header.contains(ip)) { // String.contains(...) since the header value may be a comma-separated list.
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     private ApplicationContext getApplicationContext() {
