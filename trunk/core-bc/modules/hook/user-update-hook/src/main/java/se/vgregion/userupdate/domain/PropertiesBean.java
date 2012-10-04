@@ -9,15 +9,15 @@ package se.vgregion.userupdate.domain;
  */
 public class PropertiesBean {
 
-    private String ipForExternalAccess;
+    private String[] ipForExternalAccess;
     private String externalUserRedirectUrl;
 
-    public String getIpForExternalAccess() {
+    public String[] getIpsForExternalAccess() {
         return ipForExternalAccess;
     }
 
     public void setIpForExternalAccess(String ipForExternalAccess) {
-        this.ipForExternalAccess = ipForExternalAccess;
+        this.ipForExternalAccess = ipForExternalAccess.replaceAll(" ", "").split(",");
     }
 
     public String getExternalUserRedirectUrl() {
