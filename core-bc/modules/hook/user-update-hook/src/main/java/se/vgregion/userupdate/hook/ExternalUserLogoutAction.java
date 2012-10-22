@@ -27,8 +27,9 @@ public class ExternalUserLogoutAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
-        if (externalAccessRule(request)) {
-            LOGGER.info("Is external user, will send redirect");
+        int serverPort = request.getServerPort();
+        if (serverPort == 80 || serverPort == 443) {
+            // Means we are not targeting the tomcat directly, and instead going through a Siteminder. Then redirect.
             try {
                 PropertiesBean propertiesBean = (PropertiesBean) getApplicationContext().getBean("propertiesBean");
                 response.sendRedirect(propertiesBean.getExternalUserRedirectUrl());
@@ -36,21 +37,6 @@ public class ExternalUserLogoutAction extends Action {
                 log(e.getMessage(), e);
             }
         }
-
-    }
-
-    private boolean externalAccessRule(HttpServletRequest request) {
-        String header = request.getHeader("x-forwarded-for");
-        PropertiesBean propertiesBean = (PropertiesBean) getApplicationContext().getBean("propertiesBean");
-        if (header != null) {
-            // Iterate over the ip:s. We'll find a match if the user is located externally.
-            for (String ip : propertiesBean.getIpsForExternalAccess()) {
-                if (header.contains(ip)) { // String.contains(...) since the header value may be a comma-separated list.
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private ApplicationContext getApplicationContext() {
