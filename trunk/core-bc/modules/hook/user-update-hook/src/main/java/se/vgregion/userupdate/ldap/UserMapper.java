@@ -1,6 +1,5 @@
 package se.vgregion.userupdate.ldap;
 
-import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.simple.ParameterizedContextMapper;
 import se.vgregion.userupdate.domain.UserLdapAttributes;

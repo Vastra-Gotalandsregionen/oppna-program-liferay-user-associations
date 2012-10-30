@@ -4,8 +4,9 @@
 package se.vgregion.userupdate.domain;
 
 /**
+ * Bean which holds properties.
+ *
  * @author Simon Göransson - simon.goransson@monator.com - vgrid: simgo3
- * 
  */
 public class PropertiesBean {
 
@@ -13,7 +14,7 @@ public class PropertiesBean {
     private String externalUserRedirectUrl;
 
     public String[] getIpsForExternalAccess() {
-        return ipForExternalAccess;
+        return ipForExternalAccess.clone();
     }
 
     public void setIpForExternalAccess(String ipForExternalAccess) {

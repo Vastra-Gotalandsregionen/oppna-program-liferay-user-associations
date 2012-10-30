@@ -28,7 +28,9 @@ public class ExternalUserLogoutAction extends Action {
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
         int serverPort = request.getServerPort();
-        if (serverPort == 80 || serverPort == 443) {
+        final int httpPort = 80;
+        final int httpsPort = 443;
+        if (serverPort == httpPort || serverPort == httpsPort) {
             // Means we are not targeting the tomcat directly, and instead going through a Siteminder. Then redirect.
             try {
                 PropertiesBean propertiesBean = (PropertiesBean) getApplicationContext().getBean("propertiesBean");
