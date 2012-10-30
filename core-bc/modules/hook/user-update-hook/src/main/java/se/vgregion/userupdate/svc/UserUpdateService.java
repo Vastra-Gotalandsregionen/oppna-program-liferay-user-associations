@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,7 +37,8 @@ import com.liferay.portal.service.UserLocalService;
  */
 public class UserUpdateService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserUpdateService.class);
-    private static final DateFormat DF = new SimpleDateFormat("yyyyMMdd");
+    private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
+    private final Lock dfLock = new ReentrantLock();
 
     @Autowired
     private ContactLocalService contactLocalService;
@@ -61,14 +64,23 @@ public class UserUpdateService {
      * Updates the birthday of a Liferay user with value from a LDAP catalog. If no user is found in the LDAP
      * catalog or person identity number is not set, birthday will be unmodified.
      *
-     * @param user the Liferay user to update
+     * @param user               the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes}
      */
     public void updateBirthday(User user, UserLdapAttributes userLdapAttributes) {
         PersonNummer personNummer = userLdapAttributes.getPersonNummer();
         if (personNummer.getType() != PersonNummer.Type.INVALID) {
             try {
                 Contact contact = user.getContact();
-                Date pNoDate = DF.parse(personNummer.getFull().substring(0, 8));
+                final int beginIndex = 0;
+                final int endIndex = 8;
+                dfLock.lock();
+                Date pNoDate;
+                try {
+                    pNoDate = df.parse(personNummer.getFull().substring(beginIndex, endIndex));
+                } finally {
+                    dfLock.unlock();
+                }
                 Date contactDate = contact.getBirthday();
                 if (!pNoDate.equals(contactDate)) {
                     contact.setBirthday(pNoDate);
@@ -90,6 +102,7 @@ public class UserUpdateService {
      * or person identity number is not set, gender will be unmodified.
      *
      * @param user the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes}
      */
     public void updateGender(User user, UserLdapAttributes userLdapAttributes) {
         PersonNummer personNummer = userLdapAttributes.getPersonNummer();
@@ -112,6 +125,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s email.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the email address
+     */
     public void updateEmail(User user, UserLdapAttributes userLdapAttributes) {
         String email = userLdapAttributes.getMail();
         if (email == null) {
@@ -129,6 +148,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s full name.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the full name
+     */
     public void updateFullName(User user, UserLdapAttributes userLdapAttributes) {
         // Can be improved if UserLdapAttributes.Type is considered
         String fullName = userLdapAttributes.getDisplayName();
@@ -150,6 +175,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s given name.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the given name
+     */
     public void updateGivenName(User user, UserLdapAttributes userLdapAttributes) {
         // Can be improved if UserLdapAttributes.Type is considered
         String givenName = userLdapAttributes.getGivenName();
@@ -168,6 +199,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s last name.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the last name
+     */
     public void updateLastName(User user, UserLdapAttributes userLdapAttributes) {
         // Can be improved if UserLdapAttributes.Type is considered
         String lastName = userLdapAttributes.getSn();
@@ -186,6 +223,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s title.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the title
+     */
     public void updateTitle(User user, UserLdapAttributes userLdapAttributes) {
         String title = userLdapAttributes.getTitle();
         if (title == null) {
@@ -203,6 +246,12 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s HSA title.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the HSA title
+     */
     public void updateHsaTitle(User user, UserLdapAttributes userLdapAttributes) {
         String hsaTitle = userLdapAttributes.getHsaTitle();
         if (hsaTitle == null) {
@@ -222,6 +271,7 @@ public class UserUpdateService {
      * catalog prescription code will be cleared.
      *
      * @param user the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the prescription code
      */
     public void updatePrescriptionCode(User user, UserLdapAttributes userLdapAttributes) {
         String prescriptionCode = userLdapAttributes.getHsaPersonPrescriptionCode();
@@ -249,6 +299,7 @@ public class UserUpdateService {
      * no user is found in LDAP the Domino user flag is set to false.
      *
      * @param user the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the isDomino attribute
      */
     public void updateIsDominoUser(User user, UserLdapAttributes userLdapAttributes) {
         boolean isDominoUser = false;
@@ -280,6 +331,7 @@ public class UserUpdateService {
      * catalog prescription code will be cleared.
      *
      * @param user the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes} which should contain the VGR admin type attribute
      */
     public void updateVgrAdmin(User user, UserLdapAttributes userLdapAttributes) {
         String vgrAdmin = userLdapAttributes.getVgrAdminType();
@@ -311,6 +363,12 @@ public class UserUpdateService {
         return groupName;
     }
 
+    /**
+     * Update a {@link User}'s isTandvard attribute.
+     *
+     * @param user the {@link User}
+     * @param userLdapAttributes the {@link UserLdapAttributes} of the corresponding LDAP user
+     */
     public void updateIsTandvard(User user, UserLdapAttributes userLdapAttributes) {
         boolean isTandvard = lookupIsTandvard(userLdapAttributes);
         try {
@@ -350,11 +408,16 @@ public class UserUpdateService {
     }
 
     /**
+     * Update a {@link User}'s vgrLabeledURI attribute.
+     *
      * @param user the Liferay user to update
+     * @param userOrganizations the {@link UnitLdapAttributes} of the user's organizations
      */
     public void updateVgrLabeledURI(User user, List<UnitLdapAttributes> userOrganizations) {
         List<String> uriList = new ArrayList<String>();
-        if (userOrganizations == null) return;
+        if (userOrganizations == null) {
+            return;
+        }
 
         if (userOrganizations.size() <= 0) {
             uriList.add("http://intra.vgregion.se/");
@@ -379,8 +442,16 @@ public class UserUpdateService {
         }
     }
 
+    /**
+     * Update a {@link User}'s isPrimarvard attribute.
+     *
+     * @param user the Liferay user to update
+     * @param userOrganizations the {@link UnitLdapAttributes} of the user's organizations.
+     */
     public void updateIsPrimarvard(User user, List<UnitLdapAttributes> userOrganizations) {
-        if (userOrganizations == null) return;
+        if (userOrganizations == null) {
+            return;
+        }
         boolean isPrimarvard = lookupIsPrimarvard(userOrganizations);
 
         try {
@@ -410,6 +481,12 @@ public class UserUpdateService {
         return isPrimarvard;
     }
 
+    /**
+     * Update a {@link User}'s organizations.
+     *
+     * @param user the Liferay user to update
+     * @param userLdapAttributes the {@link UserLdapAttributes} containing the vgrStrukturPersonDN attribute
+     */
     public void updateOrganization(User user, UserLdapAttributes userLdapAttributes) {
         List<String> organizationNames = lookupOrganizationName(userLdapAttributes);
         long companyId = user.getCompanyId();
@@ -468,18 +545,25 @@ public class UserUpdateService {
 
     private String extractOrganization(String unitDN) {
         String[] units = unitDN.split(",");
-        if (units.length - 3 >= 0) {
-            String[] namePart = units[units.length - 3].split("=");
+        final int three = 3;
+        if (units.length - three >= 0) {
+            String[] namePart = units[units.length - three].split("=");
             if (namePart.length == 2) {
                 return namePart[1];
             } else {
-                String msg = String.format("Strange organization name [%s]", units[units.length - 3]);
+                String msg = String.format("Strange organization name [%s]", units[units.length - three]);
                 LOGGER.warn(msg);
             }
         }
         return null;
     }
 
+    /**
+     * Update a {@link User}'s isInternalAccess attribute.
+     *
+     * @param user the Liferay user to update
+     * @param request the {@link HttpServletRequest} which holds information of the access level.
+     */
     public void updateInternalAccessOnly(User user, HttpServletRequest request) {
         boolean internalAccess = false;
         try {

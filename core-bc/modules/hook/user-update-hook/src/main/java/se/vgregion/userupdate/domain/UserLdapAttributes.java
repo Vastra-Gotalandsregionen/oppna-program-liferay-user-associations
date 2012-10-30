@@ -18,26 +18,31 @@ public class UserLdapAttributes {
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(UserLdapAttributes.class);
 
-    public Type type;
-    public Name dn = null;
-    public String uid;
-    public String cn;
-    public String sn;
-    public String givenName;
-    public String displayName;
-    public String fullName;
-    public String mail;
-    public String hsaTitle;
-    public String title;
+    private Type type;
+    private Name dn = null;
+    private String uid;
+    private String cn;
+    private String sn;
+    private String givenName;
+    private String displayName;
+    private String fullName;
+    private String mail;
+    private String hsaTitle;
+    private String title;
 
-    public String hsaPersonIdentityNumber;
-    public String hsaPersonPrescriptionCode;
-    public String vgrAdminType;
-    public String[] vgrLabeledURI;
-    public String[] vgrStrukturPerson;
-    public String[] vgrStrukturPersonDN;
-    public String[] StrukturGrupp;
+    private String hsaPersonIdentityNumber;
+    private String hsaPersonPrescriptionCode;
+    private String vgrAdminType;
+    private String[] vgrLabeledURI;
+    private String[] vgrStrukturPerson;
+    private String[] vgrStrukturPersonDN;
+    private String[] strukturGrupp;
 
+    /**
+     * Retrieve the personNummer for all types of individuals, i.e. personal, medborgare and politiker.
+     *
+     * @return the {@link PersonNummer}
+     */
     public PersonNummer getPersonNummer() {
         String pNo = null;
         switch (getType()) {
@@ -173,35 +178,35 @@ public class UserLdapAttributes {
     }
 
     public String[] getVgrLabeledURI() {
-        return vgrLabeledURI;
+        return vgrLabeledURI.clone();
     }
 
     public void setVgrLabeledURI(String[] vgrLabeledURI) {
-        this.vgrLabeledURI = vgrLabeledURI;
+        this.vgrLabeledURI = vgrLabeledURI.clone();
     }
 
     public String[] getVgrStrukturPerson() {
-        return vgrStrukturPerson;
+        return vgrStrukturPerson.clone();
     }
 
     public void setVgrStrukturPerson(String[] vgrStrukturPerson) {
-        this.vgrStrukturPerson = vgrStrukturPerson;
+        this.vgrStrukturPerson = vgrStrukturPerson.clone();
     }
 
     public String[] getVgrStrukturPersonDN() {
-        return vgrStrukturPersonDN;
+        return vgrStrukturPersonDN.clone();
     }
 
     public void setVgrStrukturPersonDN(String[] vgrStrukturPersonDN) {
-        this.vgrStrukturPersonDN = vgrStrukturPersonDN;
+        this.vgrStrukturPersonDN = vgrStrukturPersonDN.clone();
     }
 
     public String[] getStrukturGrupp() {
-        return StrukturGrupp;
+        return strukturGrupp.clone();
     }
 
     public void setStrukturGrupp(String[] strukturGrupp) {
-        StrukturGrupp = strukturGrupp;
+        this.strukturGrupp = strukturGrupp.clone();
     }
 
     private void log(String msg, Throwable ex) {

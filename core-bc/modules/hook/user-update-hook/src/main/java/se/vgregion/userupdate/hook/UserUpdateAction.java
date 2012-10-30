@@ -87,17 +87,16 @@ public class UserUpdateAction extends Action {
 
     private UserLdapAttributes lookupInLdap(String uid) {
         List<UserLdapAttributes> userLdapAttributesList = userLdapDao.resolve(uid);
+        String msg;
         switch (userLdapAttributesList.size()) {
-            case 0: {
-                String msg = String.format("Användaren [%s] hittades inte i LDAP", uid);
+            case 0:
+                msg = String.format("Användaren [%s] hittades inte i LDAP", uid);
                 throw new RuntimeException(msg);
-            }
             case 1:
                 return userLdapAttributesList.get(0);
-            default: {
-                String msg = String.format("Mer än en användaren [%s] hittades i LDAP", uid);
+            default:
+                msg = String.format("Mer än en användaren [%s] hittades i LDAP", uid);
                 throw new RuntimeException(msg);
-            }
         }
 
     }
