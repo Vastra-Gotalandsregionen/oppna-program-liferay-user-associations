@@ -434,7 +434,7 @@ public class UserUpdateService {
         }
 
         try {
-            userExpandoHelper.set("vgrLabeledURI", uriList.toArray(new String[]{}), user);
+            userExpandoHelper.set("vgrLabeledURI", uriList.toArray(new String[uriList.size()]), user);
         } catch (Exception e) {
             String msg = String.format("Failed to update vgrLabeledURI %s for [%s]",
                     uriList.toString(), user.getScreenName());
