@@ -182,7 +182,7 @@ public class UserLdapAttributes {
         if (vgrLabeledURI != null) {
             return vgrLabeledURI.clone();
         }
-        return null;
+        return new String[0];
     }
 
     public void setVgrLabeledURI(String[] vgrLabeledURI) {
@@ -193,7 +193,7 @@ public class UserLdapAttributes {
         if (vgrStrukturPerson != null) {
             return vgrStrukturPerson.clone();
         }
-        return null;
+        return new String[0];
     }
 
     public void setVgrStrukturPerson(String[] vgrStrukturPerson) {
@@ -204,7 +204,7 @@ public class UserLdapAttributes {
         if (vgrStrukturPersonDN != null) {
             return vgrStrukturPersonDN.clone();
         }
-        return null;
+        return new String[0];
     }
 
     public void setVgrStrukturPersonDN(String[] vgrStrukturPersonDN) {
@@ -215,7 +215,7 @@ public class UserLdapAttributes {
         if (strukturGrupp != null) {
             return strukturGrupp.clone();
         }
-        return null;
+        return new String[0];
     }
 
     public void setStrukturGrupp(String[] strukturGrupp) {
