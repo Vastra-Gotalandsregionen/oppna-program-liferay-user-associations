@@ -16,6 +16,7 @@ public class UserLdapAttributes {
     public enum Type {
         PERSONAL, EXTERNA, MEDBORGARE, POLITIKER, TMG, UNKNOWN;
     }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserLdapAttributes.class);
 
     private Type type;
@@ -178,7 +179,10 @@ public class UserLdapAttributes {
     }
 
     public String[] getVgrLabeledURI() {
-        return vgrLabeledURI.clone();
+        if (vgrLabeledURI != null) {
+            return vgrLabeledURI.clone();
+        }
+        return null;
     }
 
     public void setVgrLabeledURI(String[] vgrLabeledURI) {
@@ -186,7 +190,10 @@ public class UserLdapAttributes {
     }
 
     public String[] getVgrStrukturPerson() {
-        return vgrStrukturPerson.clone();
+        if (vgrStrukturPerson != null) {
+            return vgrStrukturPerson.clone();
+        }
+        return null;
     }
 
     public void setVgrStrukturPerson(String[] vgrStrukturPerson) {
@@ -194,7 +201,10 @@ public class UserLdapAttributes {
     }
 
     public String[] getVgrStrukturPersonDN() {
-        return vgrStrukturPersonDN.clone();
+        if (vgrStrukturPersonDN != null) {
+            return vgrStrukturPersonDN.clone();
+        }
+        return null;
     }
 
     public void setVgrStrukturPersonDN(String[] vgrStrukturPersonDN) {
@@ -202,7 +212,10 @@ public class UserLdapAttributes {
     }
 
     public String[] getStrukturGrupp() {
-        return strukturGrupp.clone();
+        if (strukturGrupp != null) {
+            return strukturGrupp.clone();
+        }
+        return null;
     }
 
     public void setStrukturGrupp(String[] strukturGrupp) {
