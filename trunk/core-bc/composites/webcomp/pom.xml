@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>se.vgregion.liferay-user-associations</groupId>
+    <artifactId>liferay-user-associations-core-bc</artifactId>
+    <version>1.10-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <groupId>se.vgregion.liferay-user-associations</groupId>
+  <artifactId>liferay-user-associations-core-bc-composite-webcomp</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+
+  <build>
+    <finalName>logoff-filter</finalName>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
