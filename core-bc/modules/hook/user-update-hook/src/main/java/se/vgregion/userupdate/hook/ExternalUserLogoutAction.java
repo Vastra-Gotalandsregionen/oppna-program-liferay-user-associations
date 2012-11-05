@@ -24,6 +24,13 @@ public class ExternalUserLogoutAction extends Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExternalUserLogoutAction.class);
     private ApplicationContext applicationContext;
 
+    /**
+     * As of now, we don't make any difference whether the client is located externally. We redirect to the logout-url
+     * independently, except for when the client is targeting the Tomcat directly.
+     * @param request
+     * @param response
+     * @throws ActionException
+     */
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 
