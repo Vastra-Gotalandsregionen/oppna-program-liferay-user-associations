@@ -1,6 +1,7 @@
 package se.vgregion.portal.filter;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Properties;
@@ -10,13 +11,31 @@ import java.util.Properties;
  */
 public class LogoffFilter implements Filter {
 
+    private final File path;
+    private final File file;
+
     private String logoffRedirectUrl;
-    private final File path = new File(System.getProperty("user.home") + "/.rp/logoff");
-    private final File file = new File(path, "logoff.properties");
+    private byte[] logoffHtml;
+    private final Properties properties = new Properties();
 
     public LogoffFilter() {
+        //Default values
+        this.path = new File(System.getProperty("user.home") + "/.rp/logoff");
+        this.file = new File(path, "logoff.properties");
+
+        initAll();
+    }
+
+    public LogoffFilter(File path, File file) {
+        this.path = path;
+        this.file = file;
+
+        initAll();
+    }
+
+    void initAll() {
         if (!path.isDirectory()) {
-            System.out.println("Path " + path.getAbsolutePath() + " does not exist so create it.");
+            print("Path " + path.getAbsolutePath() + " does not exist so create it.");
             path.mkdirs();
 
             createTheFile(file);
@@ -25,28 +44,51 @@ public class LogoffFilter implements Filter {
                     + " continue.");
         } else {
             if (!file.exists()) {
-                System.out.println("The file " + file.getAbsolutePath() + " does not exist.");
+                print("The file " + file.getAbsolutePath() + " does not exist.");
                 createTheFile(file);
 
                 throw new IllegalStateException("You must edit the file " + file.getAbsolutePath() + " before we can"
                         + " continue.");
             } else {
-                logoffRedirectUrl = loadProperty(file);
+                initProperties(file);
+                logoffRedirectUrl = properties.getProperty("logoff.redirect.url");
             }
         }
+
+        initLogoffHtml();
     }
 
-    private String loadProperty(File file) {
-        Properties properties = new Properties();
+    void initLogoffHtml() {
+
+        try {
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(
+                    "se/vgregion/portal/filter/logoff.html");
+            BufferedInputStream bis = new BufferedInputStream(resourceAsStream);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buf = new byte[1024];
+
+            int i;
+
+            while ((i = bis.read(buf)) != -1) {
+                baos.write(buf, 0, i);
+            }
+
+            logoffHtml = baos.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+    }
+
+    synchronized void initProperties(File file) {
         BufferedInputStream bis = null;
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
             bis = new BufferedInputStream(fis);
             properties.load(bis);
-
-            return (String) properties.get("logoff.redirect.url");
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -61,15 +103,21 @@ public class LogoffFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
+        String checkIntervalConfig = filterConfig.getInitParameter("check.interval");
+
+        // 20 seconds is default.
+        final int checkInterval = checkIntervalConfig == null ? 20000 : Integer.valueOf(checkIntervalConfig);
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(10000);
-                        String newLogoffRedirectUrl = loadProperty(file);
+                        initProperties(file);
+                        Thread.sleep(checkInterval);
+                        String newLogoffRedirectUrl = properties.getProperty("logoff.redirect.url");
                         if (!newLogoffRedirectUrl.equals(logoffRedirectUrl)) {
-                            System.out.println("Change logoffRedirectUrl to " + newLogoffRedirectUrl + ".");
+                            print("Change logoffRedirectUrl to " + newLogoffRedirectUrl + ".");
                             logoffRedirectUrl = newLogoffRedirectUrl;
                         }
                     } catch (InterruptedException e) {
@@ -87,7 +135,7 @@ public class LogoffFilter implements Filter {
 
     private void createTheFile(File file) {
         // Also create the file and write some helping text.
-        System.out.println("Create the properties file.");
+        print("Create the properties file.");
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
         try {
@@ -108,27 +156,34 @@ public class LogoffFilter implements Filter {
 
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        //httpServletResponse.sendRedirect(logoffRedirectUrl);
+        if (isExternal((HttpServletRequest) request)) {
+            httpServletResponse.sendRedirect(logoffRedirectUrl);
+        } else {
+            ServletOutputStream sos = null;
+            BufferedOutputStream bos = null;
+            try {
+                sos = httpServletResponse.getOutputStream();
+                bos = new BufferedOutputStream(sos);
 
-        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(
-                "se/vgregion/portal/filter/logoff.html");
-        BufferedInputStream bis = new BufferedInputStream(resourceAsStream);
-
-        ServletOutputStream sos = httpServletResponse.getOutputStream();
-        BufferedOutputStream bos = new BufferedOutputStream(sos);
-
-        byte[] buf = new byte[1024];
-
-        int i;
-
-        while ((i = bis.read(buf)) != -1) {
-            bos.write(buf, 0, i);
+                bos.write(logoffHtml);
+            } finally {
+                closeClosables(bos, sos);
+            }
         }
+    }
 
-        bos.close();
-        sos.close();
-        bis.close();
-        resourceAsStream.close();
+    boolean isExternal(HttpServletRequest request) {
+        String header = request.getHeader("x-forwarded-for");
+        String[] externalIps = properties.getProperty("external.ips").replaceAll(" ", "").split(",");
+        if (header != null) {
+            // Iterate over the ip:s. We'll find a match if the user is located externally.
+            for (String ip : externalIps) {
+                if (header.contains(ip)) { // String.contains(...) since the header value may be a comma-separated list.
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -146,5 +201,9 @@ public class LogoffFilter implements Filter {
                 }
             }
         }
+    }
+
+    private void print(String string) {
+        System.out.println(this.getClass().getName() + ": " + string);
     }
 }
