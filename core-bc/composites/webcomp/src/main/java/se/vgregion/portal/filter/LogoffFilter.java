@@ -142,7 +142,8 @@ public class LogoffFilter implements Filter {
             file.createNewFile();
             fileWriter = new FileWriter(file);
             bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("logoff.redirect.url{put equals sign here}{put the redirect url here}");
+            bufferedWriter.write("logoff.redirect.url{put equals sign here}{put the redirect url here}\r\n");
+            bufferedWriter.write("external.ips{put equals sign here}{put the comma-separated ip:s here}\r\n");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
