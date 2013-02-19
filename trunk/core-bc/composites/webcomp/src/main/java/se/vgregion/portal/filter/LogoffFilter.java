@@ -33,73 +33,6 @@ public class LogoffFilter implements Filter {
         initAll();
     }
 
-    void initAll() {
-        if (!path.isDirectory()) {
-            print("Path " + path.getAbsolutePath() + " does not exist so create it.");
-            path.mkdirs();
-
-            createTheFile(file);
-
-            throw new IllegalStateException("You must edit the file " + file.getAbsolutePath() + " before we can"
-                    + " continue.");
-        } else {
-            if (!file.exists()) {
-                print("The file " + file.getAbsolutePath() + " does not exist.");
-                createTheFile(file);
-
-                throw new IllegalStateException("You must edit the file " + file.getAbsolutePath() + " before we can"
-                        + " continue.");
-            } else {
-                initProperties(file);
-                logoffRedirectUrl = properties.getProperty("logoff.redirect.url");
-            }
-        }
-
-        initLogoffHtml();
-    }
-
-    void initLogoffHtml() {
-
-        try {
-            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(
-                    "se/vgregion/portal/filter/logoff.html");
-            BufferedInputStream bis = new BufferedInputStream(resourceAsStream);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            byte[] buf = new byte[1024];
-
-            int i;
-
-            while ((i = bis.read(buf)) != -1) {
-                baos.write(buf, 0, i);
-            }
-
-            logoffHtml = baos.toByteArray();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-    }
-
-    synchronized void initProperties(File file) {
-        BufferedInputStream bis = null;
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            bis = new BufferedInputStream(fis);
-            properties.load(bis);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            closeClosables(bis, fis);
-        }
-    }
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -133,25 +66,6 @@ public class LogoffFilter implements Filter {
         thread.start();
     }
 
-    private void createTheFile(File file) {
-        // Also create the file and write some helping text.
-        print("Create the properties file.");
-        BufferedWriter bufferedWriter = null;
-        FileWriter fileWriter = null;
-        try {
-            file.createNewFile();
-            fileWriter = new FileWriter(file);
-            bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("logoff.redirect.url{put equals sign here}{put the redirect url here}\r\n");
-            bufferedWriter.write("external.ips{put equals sign here}{put the comma-separated ip:s here}\r\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            closeClosables(bufferedWriter, fileWriter);
-        }
-    }
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -173,6 +87,82 @@ public class LogoffFilter implements Filter {
         }
     }
 
+    @Override
+    public void destroy() {
+
+    }
+
+    void initAll() {
+        if (!path.isDirectory()) {
+            print("Path " + path.getAbsolutePath() + " does not exist so create it.");
+            path.mkdirs();
+
+            createTheFile(file);
+
+            throw new IllegalStateException("You must edit the file " + file.getAbsolutePath() + " before we can"
+                    + " continue.");
+        } else {
+            if (!file.exists()) {
+                print("The file " + file.getAbsolutePath() + " does not exist.");
+                createTheFile(file);
+
+                throw new IllegalStateException("You must edit the file " + file.getAbsolutePath() + " before we can"
+                        + " continue.");
+            } else {
+                initProperties(file);
+                logoffRedirectUrl = properties.getProperty("logoff.redirect.url");
+            }
+        }
+
+        initLogoffHtml();
+    }
+
+    void initLogoffHtml() {
+
+        InputStream resourceAsStream = null;
+        BufferedInputStream bis = null;
+        try {
+            resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(
+                    "se/vgregion/portal/filter/logoff.html");
+            bis = new BufferedInputStream(resourceAsStream);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buf = new byte[1024];
+
+            int i;
+
+            while ((i = bis.read(buf)) != -1) {
+                baos.write(buf, 0, i);
+            }
+
+            logoffHtml = baos.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            closeClosables(bis, resourceAsStream);
+        }
+
+    }
+
+    synchronized void initProperties(File file) {
+        BufferedInputStream bis = null;
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            bis = new BufferedInputStream(fis);
+            properties.load(bis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            closeClosables(bis, fis);
+        }
+    }
+
     boolean isExternal(HttpServletRequest request) {
         String header = request.getHeader("x-forwarded-for");
         String[] externalIps = properties.getProperty("external.ips").replaceAll(" ", "").split(",");
@@ -187,11 +177,6 @@ public class LogoffFilter implements Filter {
         return false;
     }
 
-    @Override
-    public void destroy() {
-
-    }
-
     private void closeClosables(Closeable... closeables) {
         for (Closeable closeable : closeables) {
             if (closeable != null) {
@@ -201,6 +186,25 @@ public class LogoffFilter implements Filter {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void createTheFile(File file) {
+        // Also create the file and write some helping text.
+        print("Create the properties file.");
+        BufferedWriter bufferedWriter = null;
+        FileWriter fileWriter = null;
+        try {
+            file.createNewFile();
+            fileWriter = new FileWriter(file);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write("logoff.redirect.url{put equals sign here}{put the redirect url here}\r\n");
+            bufferedWriter.write("external.ips{put equals sign here}{put the comma-separated ip:s here}\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            closeClosables(bufferedWriter, fileWriter);
         }
     }
 
