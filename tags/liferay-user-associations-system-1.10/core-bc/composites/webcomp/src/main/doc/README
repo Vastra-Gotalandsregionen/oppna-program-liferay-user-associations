@@ -1,0 +1,18 @@
+To make the filter work do the following:
+
+1. Place the below filter configuration in webapps/ROOT/WEB-INF/web-xml:
+
+	<filter>
+		<filter-name>Logoff Filter</filter-name>
+		<filter-class>se.vgregion.portal.filter.LogoffFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Logoff Filter</filter-name>
+		<url-pattern>/logoff.html</url-pattern>
+	</filter-mapping>
+
+2. Build the project and copy LogoffFilter.class, LogoffFilter$1.java and logoff.html to
+webapps/ROOT/WEB-INF/classes/se/vgregion/portal/filter/.
+
+3. Copy logoff.properties to ${user.home}/.rp/logoff/ and edit the values as appropriate.
