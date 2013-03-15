@@ -570,8 +570,10 @@ public class UserUpdateService {
             internalAccess = internalAccessRule(request, user);
 
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
+            userExpandoHelper.set("isExternalSithsAccess", !internalAccess, user);
 
             userGroupHelper.processInternalAccessOnly(user);
+            userGroupHelper.processExternallySithsOnlyAccess(user);
         } catch (Exception e) {
             String msg = String.format("Failed to process isInternalAccess [%s] for [%s]", internalAccess,
                     user.getScreenName());
@@ -583,7 +585,6 @@ public class UserUpdateService {
     private boolean internalAccessRule(HttpServletRequest request, User user) {
         String header = request.getHeader("x-forwarded-for");
         String[] ipsForExternalAccess = ipForExternalAccess.replaceAll(" ", "").split(",");
-        boolean internal = true;
         if (header != null) {
             // Iterate over the ip:s. We'll find a match if the user is located externally.
             for (String ip : ipsForExternalAccess) {
