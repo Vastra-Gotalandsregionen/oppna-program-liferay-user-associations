@@ -32,14 +32,15 @@ public class UserUpdateAction extends Action {
 
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        init();
-
-        User user = lookupUser(request);
-        if (user == null) {
-            return;
-        }
-
+        User user = null;
         try {
+            init();
+
+            user = lookupUser(request);
+            if (user == null) {
+                return;
+            }
+
             UserLdapAttributes userLdapAttributes = lookupInLdap(user.getScreenName());
 
             if (!user.getScreenName().equals(userLdapAttributes.getUid())) {
@@ -66,10 +67,10 @@ public class UserUpdateAction extends Action {
             userUpdateService.updateVgrLabeledURI(user, unitLdapAttributesList);
             userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
         } catch (Exception e) {
-            log(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         } finally {
-            // internal access only check - has to be done last
-            userUpdateService.updateInternalAccessOnly(user, request);
+            // Access level check - has to be done last
+            userUpdateService.processAccessLevel(user, request);
         }
     }
 

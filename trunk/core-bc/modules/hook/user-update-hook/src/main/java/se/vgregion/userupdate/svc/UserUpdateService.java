@@ -564,13 +564,23 @@ public class UserUpdateService {
      * @param user the Liferay user to update
      * @param request the {@link HttpServletRequest} which holds information of the access level.
      */
-    public void updateInternalAccessOnly(User user, HttpServletRequest request) {
+    public void processAccessLevel(User user, HttpServletRequest request) {
         boolean internalAccess = false;
+        boolean externalSithsAccess = false;
         try {
             internalAccess = internalAccessRule(request, user);
 
+            if (internalAccess) {
+                externalSithsAccess = false;
+            } else {
+                String smAuthenticationlevel = request.getHeader("sm_authenticationlevel");
+                if ("8 or whatever it is".equals(smAuthenticationlevel)) { // TODO gör rätt
+                    externalSithsAccess = true;
+                }
+            }
+
             userExpandoHelper.set("isInternalAccess", internalAccess, user);
-            userExpandoHelper.set("isExternalSithsAccess", !internalAccess, user);
+            userExpandoHelper.set("isExternalSithsAccess", externalSithsAccess, user); // TODO ska kolla http headers istället
 
             userGroupHelper.processInternalAccessOnly(user);
             userGroupHelper.processExternallySithsOnlyAccess(user);

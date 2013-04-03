@@ -7,9 +7,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
-import com.liferay.portlet.expando.model.ExpandoBridge;
 import org.apache.log4j.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -845,7 +843,7 @@ public class UserUpdateServiceTest {
 
         when(request.getRemoteHost()).thenReturn("2.2.2.2");
 
-        userUpdateService.updateInternalAccessOnly(user, request);
+        userUpdateService.processAccessLevel(user, request);
 
         verify(userExpandoHelper).set("isInternalAccess", true, user);
         verify(userGroupHelper).processInternalAccessOnly(user);
@@ -863,7 +861,7 @@ public class UserUpdateServiceTest {
         when(ug2.getName()).thenReturn("ug2");
         when(user.getUserGroups()).thenReturn(Arrays.asList(ug1, ug2));
 
-        userUpdateService.updateInternalAccessOnly(user, request);
+        userUpdateService.processAccessLevel(user, request);
 
         verify(userExpandoHelper).set("isInternalAccess", false, user);
         verify(userGroupHelper).processInternalAccessOnly(user);
@@ -882,7 +880,7 @@ public class UserUpdateServiceTest {
         doThrow(new RuntimeException()).when(userExpandoHelper).set(anyString(), eq(true),eq(user));
         when(user.getScreenName()).thenReturn("apa");
 
-        userUpdateService.updateInternalAccessOnly(user, request);
+        userUpdateService.processAccessLevel(user, request);
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Failed to process isInternalAccess [true] for [apa]", logMessages[0]);

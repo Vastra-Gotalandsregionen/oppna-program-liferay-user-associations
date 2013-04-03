@@ -2,13 +2,11 @@ package se.vgregion.userupdate.hook;
 
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalService;
-import com.liferay.portlet.UserAttributes;
 import org.apache.log4j.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
@@ -89,7 +87,7 @@ public class UserUpdateActionTest {
         verify(userUpdateService).updateVgrLabeledURI(user, uAttr);
         verify(userUpdateService).updateIsPrimarvard(user, uAttr);
         // Request
-        verify(userUpdateService).updateInternalAccessOnly(user, request);
+        verify(userUpdateService).processAccessLevel(user, request);
     }
 
     @Test
@@ -103,7 +101,7 @@ public class UserUpdateActionTest {
         // User
         verify(userUpdateService, never()).updateBirthday(Matchers.<User>any(), Matchers.<UserLdapAttributes>any());
         // Request
-        verify(userUpdateService, never()).updateInternalAccessOnly(user, request);
+        verify(userUpdateService, never()).processAccessLevel(user, request);
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Användaren med id [1] finns inte i Liferays användar databas", logMessages[0]);
@@ -125,7 +123,7 @@ public class UserUpdateActionTest {
         // User
         verify(userUpdateService, never()).updateBirthday(Matchers.<User>any(), Matchers.<UserLdapAttributes>any());
         // Request
-        verify(userUpdateService).updateInternalAccessOnly(user, request);
+        verify(userUpdateService).processAccessLevel(user, request);
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Mer än en användaren [test] hittades i LDAP", logMessages[0]);
@@ -145,7 +143,7 @@ public class UserUpdateActionTest {
         // User
         verify(userUpdateService, never()).updateBirthday(Matchers.<User>any(), Matchers.<UserLdapAttributes>any());
         // Request
-        verify(userUpdateService).updateInternalAccessOnly(user, request);
+        verify(userUpdateService).processAccessLevel(user, request);
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Användaren [test] hittades inte i LDAP", logMessages[0]);
@@ -167,7 +165,7 @@ public class UserUpdateActionTest {
         // User
         verify(userUpdateService, never()).updateBirthday(Matchers.<User>any(), Matchers.<UserLdapAttributes>any());
         // Request
-        verify(userUpdateService).updateInternalAccessOnly(user, request);
+        verify(userUpdateService).processAccessLevel(user, request);
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Ldap användaren har felaktigt uid [test] - [err]", logMessages[0]);

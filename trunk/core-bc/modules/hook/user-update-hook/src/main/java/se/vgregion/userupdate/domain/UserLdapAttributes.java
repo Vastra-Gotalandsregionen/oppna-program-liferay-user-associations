@@ -186,7 +186,11 @@ public class UserLdapAttributes {
     }
 
     public void setVgrLabeledURI(String[] vgrLabeledURI) {
-        this.vgrLabeledURI = vgrLabeledURI.clone();
+        if (vgrLabeledURI != null) {
+            this.vgrLabeledURI = vgrLabeledURI.clone();
+        } else {
+            this.vgrLabeledURI = null;
+        }
     }
 
     public String[] getVgrStrukturPerson() {
@@ -197,7 +201,11 @@ public class UserLdapAttributes {
     }
 
     public void setVgrStrukturPerson(String[] vgrStrukturPerson) {
-        this.vgrStrukturPerson = vgrStrukturPerson.clone();
+        if (vgrStrukturPerson != null) {
+            this.vgrStrukturPerson = vgrStrukturPerson.clone();
+        } else {
+            this.vgrStrukturPerson = null;
+        }
     }
 
     public String[] getVgrStrukturPersonDN() {
@@ -208,7 +216,11 @@ public class UserLdapAttributes {
     }
 
     public void setVgrStrukturPersonDN(String[] vgrStrukturPersonDN) {
-        this.vgrStrukturPersonDN = vgrStrukturPersonDN.clone();
+        if (vgrStrukturPersonDN != null) {
+            this.vgrStrukturPersonDN = vgrStrukturPersonDN.clone();
+        } else {
+            this.vgrStrukturPersonDN = null;
+        }
     }
 
     public String[] getStrukturGrupp() {
@@ -219,7 +231,11 @@ public class UserLdapAttributes {
     }
 
     public void setStrukturGrupp(String[] strukturGrupp) {
-        this.strukturGrupp = strukturGrupp.clone();
+        if (strukturGrupp != null) {
+            this.strukturGrupp = strukturGrupp.clone();
+        } else {
+            this.strukturGrupp = null;
+        }
     }
 
     private void log(String msg, Throwable ex) {
