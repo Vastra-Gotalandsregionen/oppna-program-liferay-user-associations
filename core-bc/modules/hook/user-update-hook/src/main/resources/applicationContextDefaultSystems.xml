@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config/>
+  <context:spring-configured/>
+
+  <import resource="classpath:repository-configuration.xml"/>
+
+  <bean id="userDefaultMySystemAction" class="se.vgregion.userupdate.hook.UserDefaultMySystemAction" lazy-init="true"/>
+
+  <bean id="systemService" class="se.vgregion.portal.myprofile.mysystems.logic.SystemServiceImpl" lazy-init="true"/>
+
+  <bean id="userGroupUpdateService" class="se.vgregion.portal.liferay.group.UserGroupUpdateServiceImpl" lazy-init="true"/>
+
+  <bean id="liferayRoleUtil" class="se.vgregion.portal.liferay.VgrLiferayRoleUtil" />
+  
+  <bean id="liferayGroupUtil" class="se.vgregion.portal.liferay.VgrLiferayGroupUtil" />
+
+  <bean id="liferayDefaultCompanyId" class="java.lang.Long">
+    <constructor-arg value="10132" />
+  </bean>
+  <bean id="liferayDefaultCompanyWebId" class="java.lang.String">
+    <constructor-arg value="vgregion.se" />
+  </bean>
+  <bean id="lifraSystemUserName" class="java.lang.String">
+    <constructor-arg value="lifra1" />
+  </bean>
+  <bean id="groupRoleSuffix" class="java.lang.String">
+    <constructor-arg value="-GroupRole" />
+  </bean>
+
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="messages"/>
+  </bean>
+
+  <bean id="userGroupHelper" class="se.vgregion.liferay.usergroup.UserGroupHelperImpl" />
+  <bean id="userExpandoHelper" class="se.vgregion.liferay.expando.UserExpandoHelperImpl" />
+  <bean id="expandoUtil" class="se.vgregion.liferay.expando.ExpandoUtil" />
+
+  <bean id="liferayAutomation" class="se.vgregion.liferay.LiferayAutomation" />
+
+  <!-- Liferay utilities-->
+  <bean id="userLocalService" class="com.liferay.portal.service.UserLocalServiceUtil"
+        factory-method="getService"/>
+  <bean id="contactLocalService" class="com.liferay.portal.service.ContactLocalServiceUtil"
+        factory-method="getService"/>
+  <bean id="expandoColumnLocalService" class="com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil"
+        factory-method="getService"/>
+  <bean id="expandoTableLocalService" class="com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="expandoValueLocalService" class="com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="userGroupLocalService" class="com.liferay.portal.service.UserGroupLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="roleLocalService" class="com.liferay.portal.service.RoleLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="resourcePermissionLocalService" class="com.liferay.portal.service.ResourcePermissionLocalServiceUtil"
+        factory-method="getService" />
+  <bean id="organizationLocalService" class="com.liferay.portal.service.OrganizationLocalServiceUtil"
+        factory-method="getService" />
+
+</beans>
