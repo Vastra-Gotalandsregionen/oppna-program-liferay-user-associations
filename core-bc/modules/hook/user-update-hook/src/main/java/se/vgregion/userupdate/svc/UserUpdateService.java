@@ -11,6 +11,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +27,6 @@ import se.vgregion.portal.patient.event.PersonNummer;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
 
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
 
@@ -613,6 +613,40 @@ public class UserUpdateService {
             LOGGER.warn(msg, ex);
         } else {
             LOGGER.warn(msg);
+        }
+    }
+
+    public void updateVegaGroup(User user) {
+        try {
+            List<Group> groups = user.getGroups(); // A group is a community
+
+            boolean vegaGroupFound = false;
+            for (Group group : groups) {
+                if (group.getName().equalsIgnoreCase("vega")) {
+                    vegaGroupFound = true;
+                    break;
+                }
+            }
+
+            List<UserGroup> userGroups = user.getUserGroups();
+
+            boolean vegaUserGroupFound = false;
+            for (UserGroup userGroup : userGroups) {
+                if (userGroup.getName().equalsIgnoreCase("Administration-Vega")) {
+                    vegaUserGroupFound = true;
+                    break;
+                }
+            }
+
+            if (vegaGroupFound && !vegaUserGroupFound) {
+                userGroupHelper.addUser("Administration-Vega", user);
+            } else if (!vegaGroupFound && vegaUserGroupFound) {
+                userGroupHelper.removeUser("Administration-Vega", user);
+            }
+        } catch (PortalException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (SystemException e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }
