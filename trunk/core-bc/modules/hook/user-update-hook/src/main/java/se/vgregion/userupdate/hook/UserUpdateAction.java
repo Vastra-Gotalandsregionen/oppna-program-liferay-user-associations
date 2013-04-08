@@ -41,6 +41,10 @@ public class UserUpdateAction extends Action {
                 return;
             }
 
+            // First do things which does not need ldap attributes
+            userUpdateService.updateVegaGroup(user);
+
+            // Then do things which need the ldap attributes
             UserLdapAttributes userLdapAttributes = lookupInLdap(user.getScreenName());
 
             if (!user.getScreenName().equals(userLdapAttributes.getUid())) {

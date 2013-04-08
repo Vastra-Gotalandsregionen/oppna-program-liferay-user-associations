@@ -1,10 +1,7 @@
 package se.vgregion.userupdate.svc;
 
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Contact;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroup;
+import com.liferay.portal.model.*;
 import com.liferay.portal.service.ContactLocalService;
 import com.liferay.portal.service.UserLocalService;
 import org.apache.log4j.*;
@@ -884,6 +881,46 @@ public class UserUpdateServiceTest {
 
         String[] logMessages = writer.toString().split(EOL);
         assertEquals("WARN - Failed to process isInternalAccess [true] for [apa]", logMessages[0]);
+    }
+
+    @Test
+    public void updateVegaGroupNotAlreadyInGroup() throws Exception {
+
+        // Given
+        Group group = mock(Group.class);
+        when(group.getName()).thenReturn("Vega");
+        when(user.getGroups()).thenReturn(Arrays.asList(group));
+
+        UserGroup userGroup = mock(UserGroup.class);
+        when(userGroup.getName()).thenReturn("Not-Administration-Vega");
+
+        when(user.getUserGroups()).thenReturn(Arrays.asList(userGroup));
+
+        // When
+        userUpdateService.updateVegaGroup(user);
+
+        // Then
+        verify(userGroupHelper).addUser(eq("Administration-Vega"), eq(user));
+    }
+
+    @Test
+    public void updateVegaGroupAlreadyInGroup() throws Exception {
+
+        // Given
+        Group group = mock(Group.class);
+        when(group.getName()).thenReturn("Vega");
+        when(user.getGroups()).thenReturn(Arrays.asList(group));
+
+        UserGroup userGroup = mock(UserGroup.class);
+        when(userGroup.getName()).thenReturn("Administration-Vega");
+
+        when(user.getUserGroups()).thenReturn(Arrays.asList(userGroup));
+
+        // When
+        userUpdateService.updateVegaGroup(user);
+
+        // Then
+        verify(userGroupHelper, never()).addUser(eq("Administration-Vega"), eq(user));
     }
 
     private StringWriter setupLogger(Class loggerClass, Level level) {
