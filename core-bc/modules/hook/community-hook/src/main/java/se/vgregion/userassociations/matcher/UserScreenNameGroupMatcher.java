@@ -89,8 +89,6 @@ public class UserScreenNameGroupMatcher implements Matcher {
                         e.printStackTrace();
                     }
                 }
-            } catch (PortalException e) {
-                e.printStackTrace();
             } catch (SystemException e) {
                 e.printStackTrace();
             }
