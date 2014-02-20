@@ -18,6 +18,8 @@
  */
 package se.vgregion.userassociations.hook;
 
+import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
@@ -25,6 +27,7 @@ import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.util.Portal;
+import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -60,7 +63,12 @@ public class UserCommunityActionTest {
         when(groupLocalService.getGroup(anyLong(), eq("Extern"))).thenReturn(extern);
         when(extern.getGroupId()).thenReturn(2l);
 
-        new GroupLocalServiceUtil().setService(groupLocalService);
+        Field service = GroupLocalServiceUtil.class.getDeclaredField("_service");
+        service.setAccessible(true);
+        service.set(null, groupLocalService);
+        //new GroupLocalServiceUtil().setService(groupLocalService);
+
+        PropsUtil.setProps(mock(Props.class));
     }
 
     @Test

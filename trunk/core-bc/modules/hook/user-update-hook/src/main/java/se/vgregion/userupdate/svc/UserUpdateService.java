@@ -1,5 +1,13 @@
 package se.vgregion.userupdate.svc;
 
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.model.Contact;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.model.Organization;
+import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserGroup;
+import com.liferay.portal.service.ContactLocalService;
+import com.liferay.portal.service.UserLocalService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,27 +16,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.servlet.http.HttpServletRequest;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import se.vgregion.liferay.expando.UserExpandoHelper;
 import se.vgregion.liferay.organization.OrganizationHelper;
 import se.vgregion.liferay.usergroup.UserGroupHelper;
 import se.vgregion.portal.patient.event.PersonNummer;
 import se.vgregion.userupdate.domain.UnitLdapAttributes;
 import se.vgregion.userupdate.domain.UserLdapAttributes;
-
-import com.liferay.portal.service.ContactLocalService;
-import com.liferay.portal.service.UserLocalService;
 
 /**
  * Created by IntelliJ IDEA. Created: 2011-11-28 15:16
@@ -643,8 +642,6 @@ public class UserUpdateService {
             } else if (!vegaGroupFound && vegaUserGroupFound) {
                 userGroupHelper.removeUser("Administration-Vega", user);
             }
-        } catch (PortalException e) {
-            LOGGER.error(e.getMessage(), e);
         } catch (SystemException e) {
             LOGGER.error(e.getMessage(), e);
         }
