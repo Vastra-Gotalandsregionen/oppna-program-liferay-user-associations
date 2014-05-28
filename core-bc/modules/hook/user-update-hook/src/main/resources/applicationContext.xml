@@ -12,6 +12,10 @@
 
   <import resource="classpath:ldap-configuration.xml"/>
 
+  <bean id="vgregionCompanyId" class="java.lang.Long">
+    <constructor-arg index="0" value="10132"/>
+  </bean>
+
   <bean id="propertiesBean" class="se.vgregion.userupdate.domain.PropertiesBean">
     <property name="ipForExternalAccess" value="${ip_for_external_access}"></property>
     <property name="externalUserRedirectUrl" value="${external_user_redirect_url}"></property>

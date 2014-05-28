@@ -29,6 +29,7 @@ public class UserUpdateAction extends Action {
     private UserLocalService userLocalService;
     private UserLdapDao userLdapDao;
     private UserUpdateService userUpdateService;
+    private Long vgregionCompanyId;
 
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
@@ -38,6 +39,11 @@ public class UserUpdateAction extends Action {
 
             user = lookupUser(request);
             if (user == null) {
+                return;
+            }
+
+            if (user.getCompanyId() != vgregionCompanyId.longValue()) {
+                // Do nothing. We only do this for the vgregion instance (company).
                 return;
             }
 
@@ -73,6 +79,11 @@ public class UserUpdateAction extends Action {
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
         } finally {
+            if (user.getCompanyId() != vgregionCompanyId.longValue()) {
+                // Do nothing. We only do this for the vgregion instance (company).
+                return;
+            }
+
             // Access level check - has to be done last
             userUpdateService.processAccessLevel(user, request);
         }
@@ -134,6 +145,9 @@ public class UserUpdateAction extends Action {
             userUpdateService = (UserUpdateService) getApplicationContext().getBean("userUpdateService");
         }
 
+        if (vgregionCompanyId == null) {
+            vgregionCompanyId = (Long) getApplicationContext().getBean("vgregionCompanyId");
+        }
     }
 
     private ApplicationContext getApplicationContext() {

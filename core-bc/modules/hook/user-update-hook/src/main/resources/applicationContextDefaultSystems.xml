@@ -12,6 +12,10 @@
 
   <import resource="classpath:repository-configuration.xml"/>
 
+  <bean id="vgregionCompanyId" class="java.lang.Long">
+    <constructor-arg index="0" value="10132"/>
+  </bean>
+
   <bean id="userDefaultMySystemAction" class="se.vgregion.userupdate.hook.UserDefaultMySystemAction" lazy-init="true"/>
 
   <bean id="systemService" class="se.vgregion.portal.myprofile.mysystems.logic.SystemServiceImpl" lazy-init="true"/>
