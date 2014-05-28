@@ -31,6 +31,8 @@ public class UserDefaultMySystemAction extends Action {
 
     private LiferayUserRepository userRepository;
 
+    private Long vgregionCompanyId;
+
     @Override
     public void run(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws ActionException {
@@ -42,6 +44,11 @@ public class UserDefaultMySystemAction extends Action {
             user = userRepository.find(userId);
         } catch (Exception e) {
             LOGGER.warn("User " + userId + " is not an Liferay user - update cannot be performed.", e);
+            return;
+        }
+
+        if (!user.getCompanyid().equals(vgregionCompanyId)) {
+            // Do nothing. We only do this for the vgregion instance (company).
             return;
         }
 
@@ -81,6 +88,10 @@ public class UserDefaultMySystemAction extends Action {
 
         if (userRepository == null) {
             userRepository = (LiferayUserRepository) getApplicationContext().getBean("userRepository");
+        }
+
+        if (vgregionCompanyId == null) {
+            vgregionCompanyId = (Long) getApplicationContext().getBean("vgregionCompanyId");
         }
     }
 

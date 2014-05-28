@@ -8,10 +8,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
@@ -25,8 +22,20 @@ import static org.mockito.Mockito.*;
  */
 public class LogoffFilterTest {
     private void changeUrlInFile(File file) throws IOException {
+        FileReader reader = new FileReader(file);
+        BufferedReader br = new BufferedReader(reader);
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + "\r\n");
+        }
+
+        String fileContent = sb.toString();
+        fileContent = fileContent.replace("http://google.se", "http://newurl.se");
+
         FileWriter writer = new FileWriter(file, false);
-        writer.write("logoff.redirect.url=http://newurl.se");
+        writer.write(fileContent);
         writer.close();
     }
 

@@ -652,7 +652,7 @@ public class UserUpdateServiceTest {
         userUpdateService.updateIsTandvard(user, attr);
 
         String[] logMessages = writer.toString().split(EOL);
-        assertEquals("WARN - Failed to update isTandvard [false] for [apa]", logMessages[0]);
+        assertEquals("ERROR - Failed to update isTandvard [false] for [apa]", logMessages[0]);
     }
 
     @Test

@@ -382,7 +382,7 @@ public class UserUpdateService {
         } catch (Exception e) {
             String msg = String.format("Failed to update isTandvard [%s] for [%s]", isTandvard,
                     user.getScreenName());
-            log(msg, e);
+            LOGGER.error(msg, e);
         }
     }
 
