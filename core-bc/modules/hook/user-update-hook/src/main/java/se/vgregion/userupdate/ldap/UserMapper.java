@@ -15,24 +15,30 @@ public class UserMapper implements ParameterizedContextMapper<UserLdapAttributes
     public UserLdapAttributes mapFromContext(Object context) {
         DirContextAdapter ctx = (DirContextAdapter) context;
 
+        // Change from ldap-poc to AD.
         UserLdapAttributes attrs = new UserLdapAttributes();
         attrs.setDn(ctx.getDn());
-        attrs.setUid(ctx.getStringAttribute("uid"));
+        attrs.setUid(ctx.getStringAttribute("cn"));
         attrs.setCn(ctx.getStringAttribute("cn"));
         attrs.setSn(ctx.getStringAttribute("sn"));
         attrs.setGivenName(ctx.getStringAttribute("givenName"));
         attrs.setDisplayName(ctx.getStringAttribute("displayName"));
-        attrs.setFullName(ctx.getStringAttribute("fullName"));
+        String initials = ctx.getStringAttribute("initials");
+        if (initials != null && !initials.isEmpty()) {
+            attrs.setFullName(attrs.getGivenName() + " " + initials + " " + attrs.getSn()); // ctx.getStringAttribute("fullName")
+        } else {
+            attrs.setFullName(attrs.getGivenName() + " " + attrs.getSn()); // ctx.getStringAttribute("fullName")
+        }
         attrs.setMail(ctx.getStringAttribute("mail"));
         attrs.setHsaTitle(ctx.getStringAttribute("hsaTitle"));
         attrs.setTitle(ctx.getStringAttribute("title"));
-        attrs.setHsaPersonIdentityNumber(ctx.getStringAttribute("hsaPersonIdentityNumber"));
-        attrs.setHsaPersonPrescriptionCode(ctx.getStringAttribute("hsaPersonPrescriptionCode"));
-        attrs.setVgrAdminType(ctx.getStringAttribute("vgrAdminType"));
-        attrs.setVgrLabeledURI(ctx.getStringAttributes("labeledURI"));
+        //attrs.setHsaPersonIdentityNumber(ctx.getStringAttribute("hsaPersonIdentityNumber")); // Saknas?
+        //attrs.setHsaPersonPrescriptionCode(ctx.getStringAttribute("hsaPersonPrescriptionCode")); // Saknas?
+        //attrs.setVgrAdminType(ctx.getStringAttribute("vgrAdminType"));  // Saknas?
+        //attrs.setVgrLabeledURI(ctx.getStringAttributes("labeledURI"));  // Saknas?
         attrs.setVgrStrukturPerson(ctx.getStringAttributes("vgrStrukturPerson"));
-        attrs.setVgrStrukturPersonDN(ctx.getStringAttributes("vgrStrukturPersonDN"));
-        attrs.setStrukturGrupp(ctx.getStringAttributes("StrukturGrupp"));
+        attrs.setVgrStrukturPersonDN(ctx.getStringAttributes("vgrStrukturPerson")); // vgrStrukturPersonDN
+        attrs.setStrukturGrupp(ctx.getStringAttributes("StrukturGrupp")); // Saknas StrukturGrupp
 
         String type = ctx.getDn().toString();
         if (type.contains("ou=personal")) {

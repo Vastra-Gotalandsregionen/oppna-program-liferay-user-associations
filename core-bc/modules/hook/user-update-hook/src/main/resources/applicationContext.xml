@@ -7,13 +7,14 @@
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
   <context:annotation-config/>
-  <context:property-placeholder location="classpath:security.properties,classpath:application.properties,
-          classpath:ldap-configuration.properties" ignore-unresolvable="false"/>
+  <context:property-placeholder location="file:${user.home}/.rp/user-update-hook/security.properties,file:${user.home}/.rp/user-update-hook/application.properties,
+          file:${user.home}/.rp/user-update-hook/ldap-configuration.properties" ignore-unresolvable="false"/>
 
   <import resource="classpath:ldap-configuration.xml"/>
 
   <bean id="vgregionCompanyId" class="java.lang.Long">
-    <constructor-arg index="0" value="10132"/>
+    <!--<constructor-arg index="0" value="10132"/>-->
+      <constructor-arg index="0" value="${vgregion.company.id}"/>
   </bean>
 
   <bean id="propertiesBean" class="se.vgregion.userupdate.domain.PropertiesBean">

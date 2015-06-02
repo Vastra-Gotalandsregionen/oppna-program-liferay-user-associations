@@ -12,8 +12,12 @@
 
   <import resource="classpath:repository-configuration.xml"/>
 
+    <context:property-placeholder location="file:${user.home}/.rp/user-update-hook/application.properties"
+                                  ignore-unresolvable="false"/>
+
   <bean id="vgregionCompanyId" class="java.lang.Long">
-    <constructor-arg index="0" value="10132"/>
+      <!--<constructor-arg index="0" value="10132"/>-->
+      <constructor-arg index="0" value="${vgregion.company.id}"/>
   </bean>
 
   <bean id="userDefaultMySystemAction" class="se.vgregion.userupdate.hook.UserDefaultMySystemAction" lazy-init="true"/>
@@ -27,8 +31,10 @@
   <bean id="liferayGroupUtil" class="se.vgregion.portal.liferay.VgrLiferayGroupUtil" />
 
   <bean id="liferayDefaultCompanyId" class="java.lang.Long">
-    <constructor-arg value="10132" />
+    <!--<constructor-arg value="10132" />-->
+      <constructor-arg index="0" value="${vgregion.company.id}"/>
   </bean>
+
   <bean id="liferayDefaultCompanyWebId" class="java.lang.String">
     <constructor-arg value="vgregion.se" />
   </bean>

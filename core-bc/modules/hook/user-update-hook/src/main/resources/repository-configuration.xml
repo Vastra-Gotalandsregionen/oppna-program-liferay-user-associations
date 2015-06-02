@@ -15,8 +15,8 @@
     <property name="ignoreUnresolvablePlaceholders" value="true" />
     <property name="locations">
       <list>
-        <value>classpath:datasource.properties</value>
-        <value>classpath:security.properties</value>
+        <value>file:${user.home}/.rp/user-update-hook/datasource.properties</value>
+        <value>file:${user.home}/.rp/user-update-hook/security.properties</value>
       </list>
     </property>
   </bean>

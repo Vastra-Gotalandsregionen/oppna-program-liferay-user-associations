@@ -1,3 +1,4 @@
+#This file should, along with every other configuration-file, be in $('user-home')./rp/user-update-hook
 BIND_DN=uid=BindingUser,ou=OrganizationalUnit,O=Organization
 BIND_PW=Password
 

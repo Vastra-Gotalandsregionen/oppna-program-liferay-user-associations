@@ -26,9 +26,13 @@ public class UserLdapDao {
      * @return a {@link List} of {@link UserLdapAttributes}
      */
     public List<UserLdapAttributes> resolve(String uid) {
-        String base = "ou=anv,o=vgr";
-        String filter = String.format("(&(objectClass=person)(uid=%s))", uid);
-        return ldapTemplate.search(base, filter, new UserMapper());
+        /*String base = "ou=anv,o=vgr";
+        String filter = String.format("(&(objectClass=person)(uid=%s))", uid);*/
+        //String base = "OU=usr-Pers,DC=vgregion,DC=se";
+        String filter = String.format("(CN=%s)", uid);
+        //List result = ldapTemplate.search(base, filter, new UserMapper());
+        List result = ldapTemplate.search("", filter, new UserMapper());
+        return result;
     }
 
     /**
