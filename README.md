@@ -1,7 +1,7 @@
 <td id="wikicontent" class="psdescription">
 <p><img src="https://github.com/Vastra-Gotalandsregionen/oppna-program-liferay-user-associations/wiki/images/intro.png"></p>
 
-<h1><a href="https://github.com/Vastra-Gotalandsregionen/oppna-program-liferay-user-associations/wiki/Community_Hook">Community-Hook</a>
+<h1><a href="https://github.com/Vastra-Gotalandsregionen/oppna-program-liferay-user-associations/wiki/Community_Hook">Community-Hook</a></h1>
 
 <p>By using matching rules users can initially be associated to communities, organizations and user-groups allowing custom login landing page can be configured. </p>
 
