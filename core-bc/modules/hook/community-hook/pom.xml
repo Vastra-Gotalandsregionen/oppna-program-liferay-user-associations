@@ -33,10 +33,6 @@ Generation time : 2011-06-14 13:13:30 CEST
     </plugins>
   </build>
 
-  <properties>
-    <liferay.version>6.2.10-GA1</liferay.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>javax.portlet</groupId>

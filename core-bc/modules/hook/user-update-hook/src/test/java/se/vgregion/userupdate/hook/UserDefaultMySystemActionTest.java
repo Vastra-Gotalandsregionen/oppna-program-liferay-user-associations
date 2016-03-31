@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * This action do that and that, if it has something special it is.
- * 
+ *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 
@@ -107,20 +107,23 @@ public class UserDefaultMySystemActionTest {
         // when
         LiferayUser user = mock(LiferayUser.class);
         when(user.getId()).thenReturn(1L);
+        when(user.getScreenname()).thenReturn("screenName1");
+        when(user.getCompanyid()).thenReturn(0L);
+
         when(userRepository.find(1L)).thenReturn(user);
 
         ItSystem itSystem = new ItSystem("test", new SystemArea("testArea"));
         List<ItSystem> itSystemList = new ArrayList<ItSystem>();
         itSystemList.add(itSystem);
-        when(systemService.getAllVisibleItSystemsByUserId(1L)).thenReturn(itSystemList);
+        when(systemService.getAllVisibleItSystemsByUserId("screenName1")).thenReturn(itSystemList);
 
         when(systemService.getAllSystems()).thenReturn(itSystemList);
 
         action.run(request, response);
 
-        verify(systemService).addUserMemberToGroups(user, itSystem);
+        verify(systemService).addUserMemberToGroups(user.getScreenname(), user.getCompanyid(), itSystem);
 
-        verify(systemService, never()).removeUserMemberFromGroups(user, itSystem);
+        verify(systemService, never()).removeUserMemberFromGroups(user.getScreenname(), user.getCompanyid(), itSystem);
     }
 
     @Test
@@ -132,11 +135,14 @@ public class UserDefaultMySystemActionTest {
         // when
         LiferayUser user = mock(LiferayUser.class);
         when(user.getId()).thenReturn(1L);
+        when(user.getScreenname()).thenReturn("screenName1");
+        when(user.getCompanyid()).thenReturn(0L);
+
         when(userRepository.find(1L)).thenReturn(user);
 
         ItSystem itSystem = new ItSystem("test", new SystemArea("testArea"));
         List<ItSystem> emptyItSystemList = new ArrayList<ItSystem>();
-        when(systemService.getAllVisibleItSystemsByUserId(1L)).thenReturn(emptyItSystemList);
+        when(systemService.getAllVisibleItSystemsByUserId("screenName1")).thenReturn(emptyItSystemList);
 
         List<ItSystem> itSystemList = new ArrayList<ItSystem>();
         itSystemList.add(itSystem);
@@ -144,9 +150,9 @@ public class UserDefaultMySystemActionTest {
 
         action.run(request, response);
 
-        verify(systemService, never()).addUserMemberToGroups(user, itSystem);
+        verify(systemService, never()).addUserMemberToGroups(user.getScreenname(), user.getCompanyid(), itSystem);
 
-        verify(systemService).removeUserMemberFromGroups(user, itSystem);
+        verify(systemService).removeUserMemberFromGroups(user.getScreenname(), user.getCompanyid(), itSystem);
     }
 
     @Test

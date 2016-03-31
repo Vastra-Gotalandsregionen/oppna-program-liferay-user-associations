@@ -29,4 +29,8 @@
     <url>http://liferay-user-associations.googlecode.com/svn/trunk</url>
   </scm>
 
+  <properties>
+    <liferay.version>6.2.10.9</liferay.version>
+  </properties>
+
 </project>

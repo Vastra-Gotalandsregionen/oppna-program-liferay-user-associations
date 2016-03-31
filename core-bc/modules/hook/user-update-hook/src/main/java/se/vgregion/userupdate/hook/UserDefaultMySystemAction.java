@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * This action do that and that, if it has something special it is.
- * 
+ *
  * @author <a href="mailto:david.rosell@redpill-linpro.com">David Rosell</a>
  */
 public class UserDefaultMySystemAction extends Action {
@@ -52,16 +52,16 @@ public class UserDefaultMySystemAction extends Action {
             return;
         }
 
-        List<ItSystem> myItSystemList = systemService.getAllVisibleItSystemsByUserId(user.getId());
+        List<ItSystem> myItSystemList = systemService.getAllVisibleItSystemsByUserId(user.getScreenname());
 
         for (ItSystem itSystem : myItSystemList) {
-            systemService.addUserMemberToGroups(user, itSystem);
+            systemService.addUserMemberToGroups(user.getScreenname(), user.getCompanyid(), itSystem);
         }
 
         List<ItSystem> allItSystemList = systemService.getAllSystems();
         allItSystemList.removeAll(myItSystemList);
         for (ItSystem itSystem : allItSystemList) {
-            systemService.removeUserMemberFromGroups(user, itSystem);
+            systemService.removeUserMemberFromGroups(user.getScreenname(), user.getCompanyid(), itSystem);
         }
     }
 
