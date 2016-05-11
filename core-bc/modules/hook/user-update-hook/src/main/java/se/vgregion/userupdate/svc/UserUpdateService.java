@@ -608,11 +608,7 @@ public class UserUpdateService {
     }
 
     private void log(String msg, Throwable ex) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.warn(msg, ex);
-        } else {
-            LOGGER.warn(msg);
-        }
+        LOGGER.warn(msg, ex);
     }
 
     public void updateVegaGroup(User user) {
