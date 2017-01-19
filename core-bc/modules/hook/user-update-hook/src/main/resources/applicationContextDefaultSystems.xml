@@ -36,7 +36,7 @@
   </bean>
 
   <bean id="liferayDefaultCompanyWebId" class="java.lang.String">
-    <constructor-arg value="vgregion.se" />
+    <constructor-arg value="portalen.vgregion.se" />
   </bean>
   <bean id="lifraSystemUserName" class="java.lang.String">
     <constructor-arg value="lifra1" />

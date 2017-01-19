@@ -59,23 +59,23 @@ public class UserUpdateAction extends Action {
                 throw new RuntimeException(msg);
             }
 
-            userUpdateService.updateBirthday(user, userLdapAttributes);
-            userUpdateService.updateGender(user, userLdapAttributes);
-            userUpdateService.updateEmail(user, userLdapAttributes);
-            userUpdateService.updateFullName(user, userLdapAttributes);
-            userUpdateService.updateGivenName(user, userLdapAttributes);
-            userUpdateService.updateLastName(user, userLdapAttributes);
-            userUpdateService.updateTitle(user, userLdapAttributes);
-            userUpdateService.updateHsaTitle(user, userLdapAttributes);
-            userUpdateService.updatePrescriptionCode(user, userLdapAttributes);
-            userUpdateService.updateIsDominoUser(user, userLdapAttributes);
-            userUpdateService.updateVgrAdmin(user, userLdapAttributes);
-            userUpdateService.updateIsTandvard(user, userLdapAttributes);
+//            userUpdateService.updateBirthday(user, userLdapAttributes);
+//            userUpdateService.updateGender(user, userLdapAttributes);
+//            userUpdateService.updateEmail(user, userLdapAttributes);
+//            userUpdateService.updateFullName(user, userLdapAttributes);
+//            userUpdateService.updateGivenName(user, userLdapAttributes);
+//            userUpdateService.updateLastName(user, userLdapAttributes);
+//            userUpdateService.updateTitle(user, userLdapAttributes);
+//            userUpdateService.updateHsaTitle(user, userLdapAttributes);
+//            userUpdateService.updatePrescriptionCode(user, userLdapAttributes);
+//            userUpdateService.updateIsDominoUser(user, userLdapAttributes);
+//            userUpdateService.updateVgrAdmin(user, userLdapAttributes);
+//            userUpdateService.updateIsTandvard(user, userLdapAttributes);
             userUpdateService.updateOrganization(user, userLdapAttributes);
 
             List<UnitLdapAttributes> unitLdapAttributesList = lookupUserOrganizations(userLdapAttributes);
             userUpdateService.updateVgrLabeledURI(user, unitLdapAttributesList);
-            userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
+//            userUpdateService.updateIsPrimarvard(user, unitLdapAttributesList);
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
         } finally {
